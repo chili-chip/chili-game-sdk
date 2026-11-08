@@ -62,8 +62,9 @@ bool Menu::change(int delta) {
   } else {
     return false;
   }
-  play_ui_sound(UiSound::change);
+  // Apply first, so turning sound on plays the blip and turning it off does not.
   if(item.on_select) item.on_select();
+  play_ui_sound(UiSound::change);
   return true;
 }
 

@@ -157,3 +157,20 @@ TEST(render_lays_rows_out_top_to_bottom) {
   CHECK(menu.rows[1] == Rect(14, 51, 100, 9));
   CHECK_EQ(menu.selected_row, 1);
 }
+
+static bool sound_setting = false;
+static bool sound_applied = false;
+static std::vector<bool> heard;
+static void record_if_on(chili::UiSound) { heard.push_back(sound_applied); }
+
+TEST(change_applies_before_its_sound) {
+  // Turning sound on should already be on when the blip plays.
+  heard.clear();
+  sound_setting = false;
+  sound_applied = false;
+  chili::ui_sound = record_if_on;
+  chili::Menu menu{{chili::Menu::toggle("SOUND", sound_setting, [] { sound_applied = sound_setting; })}};
+  menu.update(Button::A);
+  CHECK_EQ(heard.size(), size_t(1));
+  CHECK(heard[0]);
+}
