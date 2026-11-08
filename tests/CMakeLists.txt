@@ -1,0 +1,11 @@
+add_library(chili-test-support OBJECT main.cpp fake_api.cpp)
+target_link_libraries(chili-test-support PUBLIC chili-game-sdk)
+
+foreach(name input menu screens save scores scene audio fx)
+  if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/test_${name}.cpp)
+    continue()
+  endif()
+  add_executable(test_${name} test_${name}.cpp)
+  target_link_libraries(test_${name} PRIVATE chili-test-support)
+  add_test(NAME ${name} COMMAND test_${name})
+endforeach()

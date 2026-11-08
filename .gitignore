@@ -1,0 +1,4 @@
+build*/
+site/
+out/
+.venv/
