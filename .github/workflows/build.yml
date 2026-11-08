@@ -1,0 +1,101 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+
+permissions:
+  contents: read
+
+env:
+  BUILD_TYPE: Release
+  EM_VERSION: 2.0.18
+  EM_CACHE_FOLDER: 'emsdk-cache'
+
+jobs:
+  build:
+    name: ${{matrix.name}}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Desktop (tests)
+            cmake-args: -D32BLIT_DIR=$GITHUB_WORKSPACE/32blit-sdk
+            apt-packages: libsdl2-dev libsdl2-image-dev libsdl2-net-dev python3-setuptools
+            test: true
+
+          - name: Web
+            cmake-args: -D32BLIT_DIR=$GITHUB_WORKSPACE/32blit-sdk
+            cmake-prefix: emcmake
+            apt-packages: python3-setuptools
+
+          - name: Console (.blit)
+            cmake-args: -D32BLIT_DIR=$GITHUB_WORKSPACE/32blit-sdk -DPICO_SDK_PATH=$GITHUB_WORKSPACE/pico-sdk -DPICO_EXTRAS_PATH=$GITHUB_WORKSPACE/pico-extras -DPICO_BOARD=chilichip_vgc -DPICO_PLATFORM=rp2350-arm-s -DCMAKE_TOOLCHAIN_FILE=$GITHUB_WORKSPACE/32blit-sdk/pico2.toolchain -DBLIT_EXECUTABLE_PICO_BLIT=1
+            apt-packages: gcc-arm-none-eabi libnewlib-arm-none-eabi libstdc++-arm-none-eabi-newlib python3-setuptools
+            pico: true
+
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          path: main
+
+      - name: Checkout 32blit SDK
+        uses: actions/checkout@v4
+        with:
+          repository: chili-chip/32blit-sdk
+          path: 32blit-sdk
+
+      - name: Checkout Pico SDK
+        if: matrix.pico
+        uses: actions/checkout@v4
+        with:
+          repository: chili-chip/pico-sdk
+          path: pico-sdk
+          submodules: true
+
+      - name: Checkout Pico Extras
+        if: matrix.pico
+        uses: actions/checkout@v4
+        with:
+          repository: chili-chip/pico-extras
+          path: pico-extras
+
+      - name: Install deps
+        run: |
+          sudo apt update && sudo apt install ${{matrix.apt-packages}}
+          pip3 install 32blit "bitstring<5"
+
+      - name: Setup Emscripten cache
+        if: matrix.name == 'Web'
+        uses: actions/cache@v6
+        with:
+          path: ${{env.EM_CACHE_FOLDER}}
+          key: ${{env.EM_VERSION}}-${{runner.os}}
+
+      - name: Setup Emscripten
+        if: matrix.name == 'Web'
+        uses: mymindstorm/setup-emsdk@v16
+        with:
+          version: ${{env.EM_VERSION}}
+          actions-cache-folder: ${{env.EM_CACHE_FOLDER}}
+
+      - name: Pre-build Emscripten ports
+        if: matrix.name == 'Web'
+        run: embuilder.py build sdl2 sdl2-image-jpg sdl2-net
+
+      - name: Configure
+        shell: bash
+        run: ${{matrix.cmake-prefix}} cmake -S main -B build -DCMAKE_BUILD_TYPE=$BUILD_TYPE ${{matrix.cmake-args}}
+
+      - name: Build
+        shell: bash
+        run: cmake --build build --config $BUILD_TYPE -j 2
+
+      - name: Test
+        if: matrix.test
+        run: ctest --test-dir build --output-on-failure

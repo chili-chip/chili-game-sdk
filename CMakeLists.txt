@@ -20,7 +20,6 @@ add_library(chili-game-sdk STATIC
 add_library(chili::game-sdk ALIAS chili-game-sdk)
 
 target_include_directories(chili-game-sdk PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
-target_compile_features(chili-game-sdk PUBLIC cxx_std_17)
 target_link_libraries(chili-game-sdk PUBLIC BlitEngine)
 
 if(NOT MSVC)
