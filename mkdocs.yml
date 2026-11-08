@@ -1,0 +1,90 @@
+site_name: chili game SDK
+site_description: Menus, scenes, saves, high scores, music and effects for chilichip console games.
+site_url: https://game-sdk.chilichip.eu/
+repo_url: https://github.com/chili-chip/chili-game-sdk
+repo_name: chili-chip/chili-game-sdk
+edit_uri: edit/main/docs/
+copyright: The chili game SDK is MIT licensed. Made by chilichip.
+
+exclude_docs: |
+  /requirements.txt
+
+theme:
+  name: material
+  logo: assets/chili.svg
+  favicon: assets/chili.svg
+  icon:
+    repo: fontawesome/brands/github
+  font:
+    text: Inter
+    code: JetBrains Mono
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+  features:
+    - navigation.sections
+    - navigation.top
+    - navigation.footer
+    - navigation.instant
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.code.annotate
+    - content.tabs.link
+    - content.action.edit
+    - toc.follow
+
+extra_css:
+  - assets/extra.css
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - def_list
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+
+nav:
+  - Home: index.md
+  - Get started: getting-started.md
+  - Modules:
+      - Input: input.md
+      - Menu: menu.md
+      - Screens: screens.md
+      - Scenes: scenes.md
+      - Save and high scores: save.md
+      - Music and sound: audio.md
+      - Effects: effects.md
+  - The demo game: demo.md
+  - Development: development.md
+
+validation:
+  omitted_files: warn
+  absolute_links: warn
+  unrecognized_links: warn
+  anchors: warn
