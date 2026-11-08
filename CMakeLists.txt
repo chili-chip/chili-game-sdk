@@ -40,6 +40,7 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
   if(CHILI_GAME_SDK_TESTS)
     enable_testing()
     add_subdirectory(tests)
+    add_subdirectory(tools)
   endif()
 
   if(CHILI_GAME_SDK_DEMO)

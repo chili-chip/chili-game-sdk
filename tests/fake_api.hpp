@@ -18,6 +18,9 @@ void reset();
 // `released` from the previous frame, like the firmware does.
 void hold(uint32_t buttons);
 
+// The 128x128 RGB screen that set_screen_mode() gives.
+const uint8_t *screen_pixels();
+
 // Files written so far, by path.
 std::map<std::string, std::string> &files();
 

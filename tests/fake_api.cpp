@@ -69,12 +69,23 @@ uint32_t random() {
 
 void debug(const char *) {}
 
+// A 128x128 RGB screen, like the console's.
+uint8_t screen_buf[128 * 128 * 3];
+
+bool set_screen_mode_format(ScreenMode, SurfaceTemplate &t) {
+  t.data = screen_buf;
+  t.bounds = Size(128, 128);
+  t.format = PixelFormat::RGB;
+  return true;
+}
+
 APIConst make_api() {
   APIConst a{};
   a.channels = fake_channels;
   a.now = now;
   a.random = random;
   a.debug = debug;
+  a.set_screen_mode_format = set_screen_mode_format;
   a.open_file = open_file;
   a.read_file = read_file;
   a.write_file = write_file;
@@ -113,6 +124,10 @@ void hold(uint32_t held) {
   api_data.buttons.state = held;
   api_data.buttons.pressed = held & ~before;
   api_data.buttons.released = before & ~held;
+}
+
+const uint8_t *screen_pixels() {
+  return screen_buf;
 }
 
 std::map<std::string, std::string> &files() {
