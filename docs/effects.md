@@ -74,7 +74,7 @@ popups.render(shake.offset());
 | `update(dt)`, `render(offset)`, `clear()`, `active()` | Like `Particles`. |
 | `life_ms`, `rise`, `fade_ms` | 700 ms, 0.02 px per ms, fades over the last 300 ms. |
 
-Keep popups on screen by clamping `at` yourself, for example `at.x = std::clamp(at.x, 14, 114)`.
+Keep popups on screen by clamping `at` yourself, for example `at.x = std::clamp<int32_t>(at.x, 14, 114)` (the explicit type is needed on the console, where `int32_t` is not `int`).
 
 ## Shake
 
