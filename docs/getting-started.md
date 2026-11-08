@@ -1,6 +1,9 @@
 # Get started
 
-This page adds the game SDK to a 32blit game. You need a game that already builds; if you do not have one yet, start from [game-template](https://github.com/chili-chip/game-template) and the [32blit SDK's getting started guide](https://sdk.chilichip.eu/getting-started/).
+This page adds the game SDK to a 32blit game that already builds.
+
+!!! tip "Starting a new game?"
+    [game-template](https://github.com/chili-chip/game-template) (and `chilichip new`, which uses it) already includes the SDK, with a title menu, a pause menu and a save file. Click **Use this template**, follow the [32blit SDK's getting started guide](https://sdk.chilichip.eu/getting-started/) to build it, and skip to [step 3](#3-use-a-module).
 
 ## 1. Add it in CMake
 

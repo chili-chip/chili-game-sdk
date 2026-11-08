@@ -77,7 +77,7 @@ void Particles::burst(Point at, Pen color, int count, const Burst &how) {
     pt.vy = sinf(ang) * spd - how.lift;
     int span = std::max(1, how.life_max - how.life_min);
     pt.max_life = pt.life = int16_t(how.life_min + blit::random() % span);
-    pt.color = ((blit::random() & 1) && how.sparkle.a) ? how.sparkle : color;
+    pt.color = ((blit::random() & 1) || !how.sparkle.a) ? color : how.sparkle;
     count--;
   }
 }
