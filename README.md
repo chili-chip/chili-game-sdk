@@ -3,7 +3,7 @@
 [![Build](https://github.com/chili-chip/chili-game-sdk/actions/workflows/build.yml/badge.svg)](https://github.com/chili-chip/chili-game-sdk/actions/workflows/build.yml)
 [![Docs](https://github.com/chili-chip/chili-game-sdk/actions/workflows/docs.yml/badge.svg)](https://github.com/chili-chip/chili-game-sdk/actions/workflows/docs.yml)
 
-A small C++ library for chilichip console games: menus, scenes, saves, high scores, name entry, music, input helpers and screen effects. It sits on top of the [32blit SDK fork](https://github.com/chili-chip/32blit-sdk) and works on the console, desktop and web.
+A small C++ library for chilichip console games: menus, scenes, saves, high scores, name entry, music, input helpers and screen effects. It sits on top of the [chilichip console SDK](https://sdk.chilichip.eu/) ([repo](https://github.com/chili-chip/32blit-sdk)) and works on the console, desktop and web.
 
 **Docs:** <https://game-sdk.chilichip.eu/>
 

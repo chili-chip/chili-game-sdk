@@ -2,7 +2,7 @@
 
 The chili game SDK is a small C++ library for **chilichip console games**. It holds the parts every game writes again: menus, scenes, saves, high scores, name entry, music, input helpers and screen effects.
 
-It sits on top of the [32blit SDK fork](https://sdk.chilichip.eu/) and runs everywhere a 32blit game runs: on the console, on your computer and in the browser.
+It sits on top of the [chilichip console SDK](https://sdk.chilichip.eu/), our fork of the 32blit SDK, and runs everywhere a 32blit game runs: on the console, on your computer and in the browser.
 
 <div class="gallery" markdown>
 
