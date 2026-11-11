@@ -1,0 +1,219 @@
+{
+  "format": "chili-rpg",
+  "version": 1,
+  "title": "Pepper Village",
+  "author": "chilichip",
+  "sprites": "sheet.png",
+  "background": "#222323",
+  "start": { "room": "village", "x": 6, "y": 5 },
+  "player": { "sprite": 4 },
+  "rules": { "step_ms": 110, "bag": 12, "spread": 1, "crit": 10 },
+
+  "stats": [
+    { "id": "hp", "label": "HP", "start": 12 },
+    { "id": "max_hp", "label": "MAX", "start": 12 },
+    { "id": "atk", "label": "ATK", "start": 2 },
+    { "id": "def", "label": "DEF", "start": 0 }
+  ],
+  "levels": { "xp": [6, 16, 32, 60], "gain": { "max_hp": 3, "atk": 1 } },
+
+  "tiles": [
+    { "key": ".", "sprite": 15 },
+    { "key": ",", "sprite": 60 },
+    { "key": ";", "sprite": 61 },
+    { "key": "T", "sprite": 74, "solid": true },
+    { "key": "t", "sprite": 75, "solid": true },
+    { "key": "H", "sprite": 103, "solid": true },
+    { "key": "h", "sprite": 105, "solid": true },
+    { "key": "+", "sprite": 106, "solid": true },
+    { "key": "o", "sprite": 36, "solid": true },
+    { "key": "p", "sprite": 37, "solid": true },
+    { "key": "~", "sprite": 124, "water": true },
+    { "key": "#", "sprite": 31, "solid": true },
+    { "key": "O", "sprite": 33 },
+    { "key": "<", "sprite": 47 },
+    { "key": ":", "sprite": 60 },
+    { "key": "S", "sprite": 113, "save": true },
+    { "key": "^", "sprite": [120, 121], "frame_ms": 300, "damage": 2 }
+  ],
+
+  "rooms": [
+    {
+      "id": "village",
+      "name": "Pepper Village",
+      "music": "village",
+      "ground": [
+        "TTTTTTTTTTTTTTTTTTTTTTTT",
+        "T,....,......tT...,....T",
+        "T..H....h.....t.....+..T",
+        "T......,............+..T",
+        "T.,....o.p.......,.....T",
+        "T......................T",
+        "T..~~~.........S.......T",
+        "T..~~~..........,......T",
+        "T.......,..............T",
+        "T....,.............tt..T",
+        "T...........t..........T",
+        "T..t...............,...T",
+        "T......,.........#O#...T",
+        "T....................,.T",
+        "T.,.......t............T",
+        "T..............,.......T",
+        "T....;..........;......T",
+        "TTTTTTTTTTTTTTTTTTTTTTTT"
+      ],
+      "actors": [
+        { "kind": "elder", "x": 4, "y": 3 },
+        { "kind": "smith", "x": 9, "y": 3 },
+        { "kind": "villager", "x": 12, "y": 5 },
+        { "kind": "dog", "x": 6, "y": 10, "patrol": [[6, 10], [16, 10], [16, 14], [6, 14]] },
+        { "kind": "slime", "x": 18, "y": 3 },
+        { "kind": "slime", "x": 21, "y": 15 }
+      ],
+      "items": [
+        { "item": "potion", "x": 21, "y": 1 }
+      ],
+      "warps": [
+        { "x": 18, "y": 12, "to": "cave", "tx": 2, "ty": 2 }
+      ]
+    },
+    {
+      "id": "cave",
+      "name": "Old Cave",
+      "music": "cave",
+      "ground": [
+        "################################",
+        "#<:::::::#:::::::::::::#:::::::#",
+        "#::::::::#:::::::::::::#::::po:#",
+        "#::S:::::#::::::^::::::#:::::::#",
+        "#::::::::#:::::::::::::#:::::::#",
+        "#::::::::::::::::::::::::::::::#",
+        "#::::::::#:::::::::::::#:::::::#",
+        "#::::::::#::::::^::::::#:::::::#",
+        "#######::#:::::::::::::#:::::::#",
+        "#::::::::#:::::::::::::#########",
+        "#:::::::::####:::######::::::::#",
+        "#::::::::::::::::::::::::::::::#",
+        "#::::^:::::::::::::::::::::::::#",
+        "#::::::::::::::::::::::::::::::#",
+        "#::::::::::#######::::::::^::::#",
+        "#::::::::::::::::::::::::::::::#",
+        "#::::::::::::::::::::::::::::::#",
+        "################################"
+      ],
+      "actors": [
+        { "kind": "spider", "x": 14, "y": 3 },
+        { "kind": "spider", "x": 19, "y": 7 },
+        { "kind": "spider", "x": 12, "y": 12 },
+        { "kind": "spider", "x": 22, "y": 15 },
+        { "kind": "skeleton", "x": 21, "y": 5 },
+        { "kind": "door", "x": 23, "y": 5 }
+      ],
+      "items": [
+        { "item": "shield", "x": 3, "y": 15 },
+        { "item": "potion", "x": 29, "y": 12 },
+        { "item": "potion", "x": 2, "y": 6 },
+        { "item": "stone", "x": 27, "y": 5 }
+      ],
+      "warps": [
+        { "x": 1, "y": 1, "to": "village", "tx": 18, "ty": 13 }
+      ],
+      "triggers": [
+        { "x": 9, "y": 5, "if": [ { "not": "cave-seen" } ], "do": [ { "set": "cave-seen" }, { "say": "cave-dark" } ] },
+        { "x": 7, "y": 8, "if": [ { "not": "cave-seen" } ], "do": [ { "set": "cave-seen" }, { "say": "cave-dark" } ] },
+        { "x": 8, "y": 8, "if": [ { "not": "cave-seen" } ], "do": [ { "set": "cave-seen" }, { "say": "cave-dark" } ] }
+      ]
+    }
+  ],
+
+  "kinds": [
+    { "id": "elder", "name": "Elder Ana", "sprite": 8, "friendly": true, "talk": "elder" },
+    { "id": "smith", "name": "Mira", "sprite": 6, "friendly": true, "talk": "smith" },
+    { "id": "villager", "name": "Tomas", "sprite": 7, "friendly": true, "brain": "wander", "speed": 2, "talk": "villager" },
+    { "id": "dog", "name": "Pip", "sprite": 19, "friendly": true, "brain": "patrol", "talk": "dog" },
+    { "id": "slime", "name": "Slime", "sprite": 22, "brain": "coward", "sight": 4, "flee": 50,
+      "stats": { "hp": 3, "atk": 1 }, "xp": 2,
+      "drops": [ { "item": "potion", "chance": 30 } ] },
+    { "id": "spider", "name": "Spider", "sprite": 21, "brain": "chase", "sight": 6,
+      "stats": { "hp": 5, "atk": 2 }, "xp": 4 },
+    { "id": "skeleton", "name": "Skeleton", "sprite": 10, "brain": "guard", "sight": 5, "home": 3,
+      "stats": { "hp": 12, "atk": 3, "def": 1 }, "xp": 12,
+      "drops": [ { "item": "key", "chance": 100 } ] },
+    { "id": "door", "name": "Door", "sprite": 32, "friendly": true,
+      "bump": { "if": [ { "has": "key" } ],
+                "do": [ { "take": "key" }, { "sound": "door" }, { "remove": true } ],
+                "else": [ { "say": "locked" } ] } }
+  ],
+
+  "slots": [ "weapon", "armour", "charm" ],
+  "items": [
+    { "id": "potion", "name": "Potion", "text": "Heals 6 HP.", "icon": 119, "stack": 5, "use": [ { "heal": 6 } ] },
+    { "id": "sword", "name": "Sword", "text": "Mira's old sword.", "icon": 62, "kind": "equip", "slot": "weapon", "bonus": { "atk": 2 } },
+    { "id": "shield", "name": "Shield", "text": "Dented, but it holds.", "icon": 94, "kind": "equip", "slot": "armour", "bonus": { "def": 1 } },
+    { "id": "ring", "name": "Sun ring", "text": "Warm to the touch.", "icon": 79, "kind": "equip", "slot": "charm", "bonus": { "max_hp": 4 } },
+    { "id": "key", "name": "Rusty key", "text": "Opens a door in the cave.", "icon": 80, "kind": "key" },
+    { "id": "stone", "name": "Sun stone", "text": "The village's light.", "icon": 78, "kind": "quest" }
+  ],
+
+  "dialogue": [
+    { "id": "elder", "who": "elder", "lines": [
+      { "if": [ { "quest": "stone", "stage": 0 } ],
+        "text": "Spiders crawled out of the old cave and took our sun stone." },
+      { "if": [ { "quest": "stone", "stage": 0 } ],
+        "text": "Without it the nights are cold. Will you bring it back?",
+        "choices": [
+          { "text": "Yes", "do": [ { "quest": "stone", "stage": 1 } ], "goto": "go" },
+          { "text": "Not yet" }
+        ] },
+      { "id": "go", "if": [ { "quest": "stone", "stage": 1 } ],
+        "text": "Thank you! Ask Mira the smith for a sword first. The cave is south east." },
+      { "if": [ { "quest": "stone", "stage": 2, "op": ">=" }, { "quest": "stone", "stage": 3, "op": "<=" } ],
+        "text": "The cave is dark. Rest on the green circles, they keep your progress." },
+      { "if": [ { "quest": "stone", "stage": 4 } ],
+        "text": "The sun stone! I can feel it from here." },
+      { "if": [ { "quest": "stone", "done": true } ],
+        "text": "The village shines again, thanks to you." }
+    ] },
+    { "id": "thanks", "who": "elder", "lines": [
+      { "text": "Take my old ring. It kept me warm for fifty winters." },
+      { "text": "Pepper Village is safe again. Thank you, friend!", "do": [ { "end": "win" } ] }
+    ] },
+    { "id": "smith", "who": "smith", "lines": [
+      { "if": [ { "quest": "stone", "stage": 0 } ],
+        "text": "Hot work, smithing. The elder looked worried today." },
+      { "if": [ { "quest": "stone", "stage": 1 } ],
+        "text": "Spiders, is it? Take this sword. Press X for your bag, then A to hold it.",
+        "do": [ { "give": "sword" } ] },
+      { "if": [ { "quest": "stone", "stage": 2, "op": ">=" } ],
+        "text": "Spiders hate a good swing. So do slimes, if you can catch them." }
+    ] },
+    { "id": "villager", "who": "villager", "lines": [
+      { "text": "Pip walks the same path every day. Good dog." },
+      { "if": [ { "has": "potion" } ], "text": "A potion? Drink it when you are hurt. B waits a turn." }
+    ] },
+    { "id": "dog", "who": "dog", "lines": [ { "text": "Woof!" } ] },
+    { "id": "locked", "lines": [ { "text": "The door is locked. Something in here must have the key." } ] },
+    { "id": "cave-dark", "lines": [ { "text": "It is cold down here. Something clicks in the dark." } ] }
+  ],
+
+  "quests": [
+    { "id": "stone", "title": "Sun stone", "stages": [
+      { "log": "Get a sword from Mira the smith.", "goal": { "talk": "smith" } },
+      { "log": "Beat 3 spiders in the old cave.", "goal": { "defeat": "spider", "count": 3 } },
+      { "log": "Find the sun stone in the cave.", "goal": { "collect": "stone" } },
+      { "log": "Bring the stone to Elder Ana.", "goal": { "talk": "elder" },
+        "done": [ { "take": "stone" }, { "give": "ring" }, { "xp": 20 }, { "say": "thanks" } ] }
+    ] }
+  ],
+
+  "songs": [
+    { "id": "village", "step_ms": 170,
+      "lead": "E5 - G5 - A5 - - - G5 - E5 - D5 - - - C5 - D5 - E5 - G5 - E5 - - - - - - - ",
+      "bass": "C3 - - - G2 - - - A2 - - - E2 - - - F2 - - - C3 - - - G2 - - - - - - - ",
+      "drums": "" },
+    { "id": "cave", "step_ms": 200,
+      "lead": "A4 - . . C5 - . . B4 - . . G#4 - - - A4 - . . E5 - . . D5 - C5 - B4 - - - ",
+      "bass": "A2 - - - - - - - E2 - - - - - - - F2 - - - - - - - E2 - - - - - - - ",
+      "drums": "K . . . . . H . K . . . . . H . K . . . . . H . K . . . S . . . " }
+  ]
+}

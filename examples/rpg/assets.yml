@@ -1,0 +1,7 @@
+# The sprite sheet and the game file, built into the game.
+assets.cpp:
+  assets/sheet.png:
+    name: asset_sheet
+  assets/pepper.rpg:
+    name: asset_pepper_rpg
+    type: raw/binary

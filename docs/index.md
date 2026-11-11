@@ -1,6 +1,6 @@
 # chili game SDK
 
-The chili game SDK is a small C++ library for **chilichip console games**. It holds the parts every game writes again: menus, scenes, saves, high scores, name entry, music, input helpers and screen effects.
+The chili game SDK is a small C++ library for **chilichip console games**. It holds the parts every game writes again: menus, scenes, saves, high scores, name entry, music, input helpers, screen effects and a text box. On top of that, the [RPG parts](rpg/index.md) play a whole turn-based RPG from one game file.
 
 It sits on top of the [chilichip console SDK](https://sdk.chilichip.eu/), our fork of the 32blit SDK, and runs everywhere a 32blit game runs: on the console, on your computer and in the browser.
 
@@ -30,7 +30,22 @@ Each module is one header. Take only what your game needs: the modules do not de
 | [Save and high scores](save.md) | `chili/save.hpp`, `chili/scores.hpp` | `Save<T>` with magic and version, `HighScores<Entry, N>` |
 | [Music and sound](audio.md) | `chili/audio.hpp` | Songs as note strings, sound effects, music and sound on/off |
 | [Effects](effects.md) | `chili/fx.hpp` | Particles, floating text, shake, dim, panels, text with shadow |
+| [Text box](dialogue.md) | `chili/dialogue.hpp` | A dialogue box with typewriter text, pages, a face and choices |
 | Theme | `chili/ui.hpp` | Shared colours and one hook for menu sounds |
+
+## RPG parts
+
+A separate target, `chili-game-sdk-rpg`, adds tile maps, grid movement and turns, stats and levels, bump combat, enemy brains, a bag with equipment, dialogue, quests and saves. The whole game lives in one JSON game file, so a no-code RPG maker can write it later.
+
+<div class="gallery" markdown>
+
+[![Pepper Village](assets/shots/rpg-village.png)](rpg/index.md)
+[![Dialogue](assets/shots/rpg-dialogue.png)](rpg/dialogue.md)
+[![Bag](assets/shots/rpg-inventory.png)](rpg/inventory.md)
+
+</div>
+
+Start at the [RPG overview](rpg/index.md), or play [Pepper Village](rpg/demo.md), the demo RPG.
 
 ## How it fits together
 
@@ -92,7 +107,7 @@ Ready? [Add it to your game](getting-started.md).
 | Left out | Why |
 | --- | --- |
 | Volume and brightness | The console's system menu owns them. Games only have music on/off and sound on/off. |
-| Tile maps, inventory, RPG parts | Waiting until two games need them ([32blit-sdk #21](https://github.com/chili-chip/32blit-sdk/issues/21), [#22](https://github.com/chili-chip/32blit-sdk/issues/22), [#23](https://github.com/chili-chip/32blit-sdk/issues/23)). |
+| Real-time RPG mode | Planned in [#28](https://github.com/chili-chip/chili-game-sdk/issues/28). |
 | A game loop, entities, asset loading | 32blit already does these. |
 
-The plan and progress are in [issue #1](https://github.com/chili-chip/chili-game-sdk/issues/1).
+The plan and progress are in [issue #1](https://github.com/chili-chip/chili-game-sdk/issues/1), and for the RPG parts in [issue #15](https://github.com/chili-chip/chili-game-sdk/issues/15).

@@ -7,10 +7,13 @@ How to work on the SDK itself.
 | Path | Holds |
 | --- | --- |
 | `include/chili/` | The public headers, one per module. |
-| `src/` | The code. |
+| `include/chili/rpg/` | The RPG headers: `game.hpp` (the loaded game file) and `world.hpp`. |
+| `src/` | The code. `src/rpg/` is the RPG target. |
+| `format/` | The RPG game file's JSON Schema and `validate.py`. |
 | `tests/` | Unit tests, one file per module, and a fake 32blit API. |
 | `examples/demo/` | Chili Catch, the demo game. |
-| `tools/` | The screenshot tool for these docs. |
+| `examples/rpg/` | Pepper Village, the demo RPG. |
+| `tools/` | The screenshot tools for these docs. |
 | `docs/` | This site (MkDocs). |
 
 ## Build and test
@@ -28,7 +31,7 @@ The tests build only on desktop, when this repo is the top-level project. Games 
 | Option | Default | Builds |
 | --- | --- | --- |
 | `CHILI_GAME_SDK_TESTS` | on for desktop | the unit tests and the screenshot tool |
-| `CHILI_GAME_SDK_DEMO` | on | Chili Catch |
+| `CHILI_GAME_SDK_DEMO` | on | Chili Catch and Pepper Village |
 
 ### How the tests work
 
@@ -43,7 +46,20 @@ The tests link the real 32blit engine but not a firmware. `tests/fake_api.cpp` s
 | in-memory files | `read_save`/`write_save` work; `fake::files()` shows what was written. |
 | a 128x128 screen | For the screenshot tool. |
 
-Logic is tested: input, menu navigation, save versioning, score ranking, the scene switcher, the note parser and the sequencer. Drawing is checked by eye, in the demo and the screenshots.
+Logic is tested: input, menu navigation, save versioning, score ranking, the scene switcher, the note parser, the sequencer and the text box.
+
+The RPG tests (`test_rpg_*.cpp`) load a small game file from `tests/rpg_fixture.hpp` and play it with `tests/rpg_world.hpp` (`play::press()`, `play::settle()`). One file per part: loader, events, maps, turns, stats, combat, AI, items, quests, save. `test_rpg_demo.cpp` plays Pepper Village's whole story with the real game file.
+
+Drawing is checked by eye, in the demos and the screenshots.
+
+### Check the game file format
+
+```sh
+pip install jsonschema
+python format/validate.py examples/rpg/assets/pepper.rpg
+```
+
+Change `format/schema.json`, the loader (`src/rpg/load.cpp`) and the [game file page](rpg/game-file.md) together.
 
 ### Write the test first
 
@@ -70,14 +86,14 @@ CI builds all three on every push: desktop with the tests, web, and the console 
 
 ## Screenshots
 
-The screenshots here come from the demo, played with scripted input on the fake API, so they are the same every time. After changing how something looks:
+The screenshots here come from the demos, played with scripted input on the fake API, so they are the same every time. After changing how something looks:
 
 ```sh
 pip install pillow
 python3 tools/screenshots.py
 ```
 
-It writes `docs/assets/shots/*.png` at 3x. The script of button presses is in `tools/shots.cpp`.
+It writes `docs/assets/shots/*.png` at 3x, and the RPG demo's splash image. The scripts of button presses are in `tools/shots.cpp` (Chili Catch) and `tools/rpg_shots.cpp` (Pepper Village).
 
 ## Docs
 

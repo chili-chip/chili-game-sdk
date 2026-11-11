@@ -1,0 +1,457 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/chili-chip/chili-game-sdk/format/schema.json",
+  "title": "chili RPG game file, format v1",
+  "description": "One .rpg file holds a whole RPG: maps, stats, items, enemies, dialogue and quests. The SDK's loader also checks that every id it names exists.",
+  "type": "object",
+  "required": ["format", "version", "title", "start", "player", "stats", "tiles", "rooms"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": { "type": "string" },
+    "format": { "const": "chili-rpg" },
+    "version": { "const": 1 },
+    "title": { "type": "string", "minLength": 1, "maxLength": 32 },
+    "author": { "type": "string", "maxLength": 32 },
+    "sprites": { "type": "string", "description": "The sprite sheet: 8x8 sprites, numbered left to right, top to bottom." },
+    "background": { "type": "string", "pattern": "^#[0-9a-fA-F]{6}$" },
+    "start": {
+      "type": "object",
+      "required": ["room", "x", "y"],
+      "additionalProperties": false,
+      "properties": {
+        "room": { "$ref": "#/$defs/id" },
+        "x": { "$ref": "#/$defs/coord" },
+        "y": { "$ref": "#/$defs/coord" }
+      }
+    },
+    "player": { "$ref": "#/$defs/look" },
+    "rules": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "step_ms": { "type": "integer", "minimum": 0, "maximum": 1000, "default": 120 },
+        "diagonal": { "type": "boolean", "default": false },
+        "bag": { "type": "integer", "minimum": 1, "maximum": 32, "default": 16 },
+        "spread": { "type": "integer", "minimum": 0, "maximum": 99, "default": 0 },
+        "crit": { "type": "integer", "minimum": 0, "maximum": 100, "default": 0 }
+      }
+    },
+    "stats": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "required": ["id"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "label": { "type": "string", "maxLength": 4 },
+          "start": { "$ref": "#/$defs/amount" }
+        }
+      },
+      "allOf": [
+        { "contains": { "properties": { "id": { "const": "hp" } } } },
+        { "contains": { "properties": { "id": { "const": "max_hp" } } } }
+      ]
+    },
+    "levels": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "xp": { "type": "array", "maxItems": 99, "items": { "type": "integer", "minimum": 1 } },
+        "gain": { "$ref": "#/$defs/stat_values" }
+      }
+    },
+    "tiles": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 90,
+      "items": {
+        "type": "object",
+        "required": ["key", "sprite"],
+        "additionalProperties": false,
+        "properties": {
+          "key": { "type": "string", "pattern": "^[!-~]$" },
+          "sprite": {
+            "oneOf": [
+              { "$ref": "#/$defs/sprite" },
+              { "type": "array", "minItems": 1, "maxItems": 4, "items": { "$ref": "#/$defs/sprite" } }
+            ]
+          },
+          "frame_ms": { "type": "integer", "minimum": 50, "maximum": 5000 },
+          "solid": { "type": "boolean" },
+          "water": { "type": "boolean" },
+          "save": { "type": "boolean" },
+          "damage": { "type": "integer", "minimum": 0, "maximum": 999 }
+        }
+      }
+    },
+    "rooms": { "type": "array", "minItems": 1, "maxItems": 32, "items": { "$ref": "#/$defs/room" } },
+    "kinds": { "type": "array", "maxItems": 64, "items": { "$ref": "#/$defs/kind" } },
+    "slots": { "type": "array", "maxItems": 8, "items": { "$ref": "#/$defs/id" } },
+    "items": { "type": "array", "maxItems": 128, "items": { "$ref": "#/$defs/item" } },
+    "dialogue": { "type": "array", "maxItems": 255, "items": { "$ref": "#/$defs/dialogue" } },
+    "quests": { "type": "array", "maxItems": 32, "items": { "$ref": "#/$defs/quest" } },
+    "songs": { "type": "array", "maxItems": 32, "items": { "$ref": "#/$defs/song" } },
+    "lose": { "$ref": "#/$defs/event" }
+  },
+
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z0-9_-]{1,24}$" },
+    "coord": { "type": "integer", "minimum": 0, "maximum": 63 },
+    "sprite": { "type": "integer", "minimum": 0, "maximum": 255 },
+    "amount": { "type": "integer", "minimum": -9999, "maximum": 9999 },
+    "count": { "type": "integer", "minimum": 1, "maximum": 999 },
+    "stat_values": {
+      "type": "object",
+      "propertyNames": { "$ref": "#/$defs/id" },
+      "additionalProperties": { "$ref": "#/$defs/amount" }
+    },
+
+    "look": {
+      "type": "object",
+      "properties": {
+        "sprite": { "$ref": "#/$defs/sprite" },
+        "sprites": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "down": { "$ref": "#/$defs/sprite" },
+            "up": { "$ref": "#/$defs/sprite" },
+            "left": { "$ref": "#/$defs/sprite" },
+            "right": { "$ref": "#/$defs/sprite" }
+          }
+        },
+        "frames": { "type": "integer", "minimum": 1, "maximum": 4 },
+        "flip": { "type": "boolean" }
+      }
+    },
+
+    "row": { "type": "string", "minLength": 16, "maxLength": 64 },
+    "room": {
+      "type": "object",
+      "required": ["id", "ground"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "name": { "type": "string", "maxLength": 24 },
+        "ground": { "type": "array", "minItems": 16, "maxItems": 64, "items": { "$ref": "#/$defs/row" } },
+        "top": { "type": "array", "minItems": 16, "maxItems": 64, "items": { "$ref": "#/$defs/row" } },
+        "music": { "$ref": "#/$defs/id" },
+        "actors": {
+          "type": "array",
+          "maxItems": 32,
+          "items": {
+            "type": "object",
+            "required": ["kind", "x", "y"],
+            "additionalProperties": false,
+            "properties": {
+              "kind": { "$ref": "#/$defs/id" },
+              "x": { "$ref": "#/$defs/coord" },
+              "y": { "$ref": "#/$defs/coord" },
+              "talk": { "$ref": "#/$defs/id" },
+              "bump": { "$ref": "#/$defs/event" },
+              "patrol": {
+                "type": "array",
+                "maxItems": 16,
+                "items": { "type": "array", "prefixItems": [{ "$ref": "#/$defs/coord" }, { "$ref": "#/$defs/coord" }], "minItems": 2, "maxItems": 2 }
+              }
+            }
+          }
+        },
+        "items": {
+          "type": "array",
+          "maxItems": 32,
+          "items": {
+            "type": "object",
+            "required": ["item", "x", "y"],
+            "additionalProperties": false,
+            "properties": {
+              "item": { "$ref": "#/$defs/id" },
+              "x": { "$ref": "#/$defs/coord" },
+              "y": { "$ref": "#/$defs/coord" },
+              "count": { "type": "integer", "minimum": 1, "maximum": 99 }
+            }
+          }
+        },
+        "warps": {
+          "type": "array",
+          "maxItems": 32,
+          "items": {
+            "type": "object",
+            "required": ["x", "y", "to", "tx", "ty"],
+            "additionalProperties": false,
+            "properties": {
+              "x": { "$ref": "#/$defs/coord" },
+              "y": { "$ref": "#/$defs/coord" },
+              "to": { "$ref": "#/$defs/id" },
+              "tx": { "$ref": "#/$defs/coord" },
+              "ty": { "$ref": "#/$defs/coord" }
+            }
+          }
+        },
+        "triggers": {
+          "type": "array",
+          "maxItems": 32,
+          "items": {
+            "type": "object",
+            "required": ["x", "y"],
+            "additionalProperties": false,
+            "properties": {
+              "x": { "$ref": "#/$defs/coord" },
+              "y": { "$ref": "#/$defs/coord" },
+              "once": { "type": "boolean", "default": true },
+              "if": { "$ref": "#/$defs/conditions" },
+              "do": { "$ref": "#/$defs/actions" },
+              "else": { "$ref": "#/$defs/actions" }
+            }
+          }
+        }
+      }
+    },
+
+    "kind": {
+      "type": "object",
+      "required": ["id"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "name": { "type": "string", "maxLength": 16 },
+        "sprite": { "$ref": "#/$defs/sprite" },
+        "sprites": { "$ref": "#/$defs/look/properties/sprites" },
+        "frames": { "type": "integer", "minimum": 1, "maximum": 4 },
+        "flip": { "type": "boolean" },
+        "brain": {
+          "description": "still, wander, chase, guard, patrol, coward, or the name of a brain the game adds in C++.",
+          "$ref": "#/$defs/id"
+        },
+        "sight": { "type": "integer", "minimum": 0, "maximum": 32 },
+        "home": { "type": "integer", "minimum": 0, "maximum": 32 },
+        "flee": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "speed": { "type": "integer", "minimum": 1, "maximum": 3 },
+        "friendly": { "type": "boolean" },
+        "stats": { "$ref": "#/$defs/stat_values" },
+        "xp": { "type": "integer", "minimum": 0, "maximum": 9999 },
+        "drops": {
+          "type": "array",
+          "maxItems": 8,
+          "items": {
+            "type": "object",
+            "required": ["item"],
+            "additionalProperties": false,
+            "properties": {
+              "item": { "$ref": "#/$defs/id" },
+              "chance": { "type": "integer", "minimum": 0, "maximum": 100 },
+              "count": { "type": "integer", "minimum": 1, "maximum": 99 }
+            }
+          }
+        },
+        "talk": { "$ref": "#/$defs/id" },
+        "bump": { "$ref": "#/$defs/event" },
+        "death": { "$ref": "#/$defs/event" }
+      }
+    },
+
+    "item": {
+      "type": "object",
+      "required": ["id"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "name": { "type": "string", "maxLength": 16 },
+        "text": { "type": "string", "maxLength": 80 },
+        "icon": { "$ref": "#/$defs/sprite" },
+        "kind": { "enum": ["use", "equip", "key", "quest"] },
+        "stack": { "type": "integer", "minimum": 1, "maximum": 99 },
+        "price": { "type": "integer", "minimum": 0, "maximum": 65535 },
+        "slot": { "$ref": "#/$defs/id" },
+        "bonus": { "$ref": "#/$defs/stat_values" },
+        "use": { "$ref": "#/$defs/event" }
+      },
+      "if": { "properties": { "kind": { "const": "equip" } }, "required": ["kind"] },
+      "then": { "required": ["slot"] }
+    },
+
+    "dialogue": {
+      "type": "object",
+      "required": ["id", "lines"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "who": { "type": "string", "maxLength": 24 },
+        "face": { "type": "integer", "minimum": -1, "maximum": 255 },
+        "lines": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 64,
+          "items": {
+            "type": "object",
+            "required": ["text"],
+            "additionalProperties": false,
+            "properties": {
+              "id": { "$ref": "#/$defs/id" },
+              "who": { "type": "string", "maxLength": 24 },
+              "face": { "type": "integer", "minimum": -1, "maximum": 255 },
+              "text": { "type": "string", "minLength": 1, "maxLength": 400 },
+              "if": { "$ref": "#/$defs/conditions" },
+              "do": { "$ref": "#/$defs/actions" },
+              "else": { "$ref": "#/$defs/actions" },
+              "choices": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 4,
+                "items": {
+                  "type": "object",
+                  "required": ["text"],
+                  "additionalProperties": false,
+                  "properties": {
+                    "text": { "type": "string", "minLength": 1, "maxLength": 20 },
+                    "if": { "$ref": "#/$defs/conditions" },
+                    "do": { "$ref": "#/$defs/actions" },
+                    "else": { "$ref": "#/$defs/actions" },
+                    "goto": { "$ref": "#/$defs/id" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "quest": {
+      "type": "object",
+      "required": ["id", "stages"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "title": { "type": "string", "maxLength": 20 },
+        "stages": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 8,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "log": { "type": "string", "maxLength": 120 },
+              "goal": {
+                "type": "object",
+                "minProperties": 1,
+                "additionalProperties": false,
+                "properties": {
+                  "talk": { "$ref": "#/$defs/id" },
+                  "collect": { "$ref": "#/$defs/id" },
+                  "defeat": { "$ref": "#/$defs/id" },
+                  "reach": { "$ref": "#/$defs/id" },
+                  "flag": { "$ref": "#/$defs/id" },
+                  "count": { "$ref": "#/$defs/count" },
+                  "x": { "$ref": "#/$defs/coord" },
+                  "y": { "$ref": "#/$defs/coord" }
+                },
+                "oneOf": [
+                  { "required": ["talk"] },
+                  { "required": ["collect"] },
+                  { "required": ["defeat"] },
+                  { "required": ["reach", "x", "y"] },
+                  { "required": ["flag"] }
+                ]
+              },
+              "done": { "$ref": "#/$defs/event" }
+            }
+          }
+        }
+      }
+    },
+
+    "song": {
+      "type": "object",
+      "required": ["id"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "step_ms": { "type": "integer", "minimum": 30, "maximum": 1000 },
+        "lead": { "type": "string" },
+        "bass": { "type": "string" },
+        "drums": { "type": "string" }
+      }
+    },
+
+    "event": {
+      "description": "A list of actions, or conditions with the actions to run when they pass (do) and when they do not (else).",
+      "oneOf": [
+        { "$ref": "#/$defs/actions" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "if": { "$ref": "#/$defs/conditions" },
+            "do": { "$ref": "#/$defs/actions" },
+            "else": { "$ref": "#/$defs/actions" }
+          }
+        }
+      ]
+    },
+
+    "conditions": { "type": "array", "items": { "$ref": "#/$defs/condition" } },
+    "op": { "enum": ["=", "!=", "<", "<=", ">", ">="] },
+    "condition": {
+      "oneOf": [
+        { "type": "object", "required": ["flag"], "additionalProperties": false, "properties": { "flag": { "$ref": "#/$defs/id" } } },
+        { "type": "object", "required": ["not"], "additionalProperties": false, "properties": { "not": { "$ref": "#/$defs/id" } } },
+        {
+          "type": "object", "required": ["var"], "additionalProperties": false,
+          "properties": { "var": { "$ref": "#/$defs/id" }, "op": { "$ref": "#/$defs/op" }, "value": { "type": "integer" } }
+        },
+        {
+          "type": "object", "required": ["has"], "additionalProperties": false,
+          "properties": { "has": { "$ref": "#/$defs/id" }, "count": { "$ref": "#/$defs/count" } }
+        },
+        {
+          "type": "object", "required": ["quest"], "additionalProperties": false,
+          "properties": {
+            "quest": { "$ref": "#/$defs/id" },
+            "stage": { "type": "integer", "minimum": 0, "maximum": 8 },
+            "done": { "type": "boolean" },
+            "op": { "$ref": "#/$defs/op" }
+          }
+        },
+        {
+          "type": "object", "required": ["stat"], "additionalProperties": false,
+          "properties": { "stat": { "$ref": "#/$defs/id" }, "op": { "$ref": "#/$defs/op" }, "value": { "type": "integer" } }
+        }
+      ]
+    },
+
+    "actions": { "type": "array", "items": { "$ref": "#/$defs/action" } },
+    "action": {
+      "oneOf": [
+        { "$ref": "#/$defs/one", "required": ["set"], "properties": { "set": { "$ref": "#/$defs/id" } } },
+        { "$ref": "#/$defs/one", "required": ["clear"], "properties": { "clear": { "$ref": "#/$defs/id" } } },
+        { "$ref": "#/$defs/one", "required": ["add", "value"], "properties": { "add": { "$ref": "#/$defs/id" }, "value": { "type": "integer" } } },
+        { "$ref": "#/$defs/one", "required": ["give"], "properties": { "give": { "$ref": "#/$defs/id" }, "count": { "$ref": "#/$defs/count" } } },
+        { "$ref": "#/$defs/one", "required": ["take"], "properties": { "take": { "$ref": "#/$defs/id" }, "count": { "$ref": "#/$defs/count" } } },
+        { "$ref": "#/$defs/one", "required": ["heal"], "properties": { "heal": { "type": "integer", "minimum": 0, "maximum": 9999 } } },
+        { "$ref": "#/$defs/one", "required": ["hurt"], "properties": { "hurt": { "type": "integer", "minimum": 0, "maximum": 9999 } } },
+        { "$ref": "#/$defs/one", "required": ["xp"], "properties": { "xp": { "type": "integer", "minimum": 0, "maximum": 9999 } } },
+        { "$ref": "#/$defs/one", "required": ["stat", "value"], "properties": { "stat": { "$ref": "#/$defs/id" }, "value": { "$ref": "#/$defs/amount" } } },
+        { "$ref": "#/$defs/one", "required": ["warp", "x", "y"], "properties": { "warp": { "$ref": "#/$defs/id" }, "x": { "$ref": "#/$defs/coord" }, "y": { "$ref": "#/$defs/coord" } } },
+        { "$ref": "#/$defs/one", "required": ["say"], "properties": { "say": { "$ref": "#/$defs/id" } } },
+        { "$ref": "#/$defs/one", "required": ["quest"], "properties": { "quest": { "$ref": "#/$defs/id" }, "stage": { "type": "integer", "minimum": 0, "maximum": 8 }, "done": { "const": true } } },
+        { "$ref": "#/$defs/one", "required": ["sound"], "properties": { "sound": { "enum": ["step", "bump", "hit", "hurt", "miss", "pickup", "door", "level", "save", "quest", "win", "lose"] } } },
+        { "$ref": "#/$defs/one", "required": ["music"], "properties": { "music": { "$ref": "#/$defs/id" } } },
+        { "$ref": "#/$defs/one", "required": ["save"], "properties": { "save": { "const": true } } },
+        { "$ref": "#/$defs/one", "required": ["end"], "properties": { "end": { "enum": ["win", "lose"] } } },
+        { "$ref": "#/$defs/one", "required": ["remove"], "properties": { "remove": { "const": true } } },
+        { "$ref": "#/$defs/one", "required": ["call"], "properties": { "call": { "$ref": "#/$defs/id" } } }
+      ]
+    },
+    "one": {
+      "type": "object",
+      "description": "An action object: one action key, plus its options.",
+      "propertyNames": { "enum": ["set", "clear", "add", "value", "give", "take", "count", "heal", "hurt", "xp", "stat", "warp", "x", "y", "say", "quest", "stage", "done", "sound", "music", "save", "end", "remove", "call"] },
+      "maxProperties": 3
+    }
+  }
+}
