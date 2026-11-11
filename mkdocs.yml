@@ -81,6 +81,8 @@ nav:
       - Music and sound: audio.md
       - Effects: effects.md
   - The demo game: demo.md
+  - Plans:
+      - RPG expansion: rpg-plan.md
   - Development: development.md
 
 validation:

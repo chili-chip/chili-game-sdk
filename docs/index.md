@@ -32,6 +32,9 @@ Each module is one header. Take only what your game needs: the modules do not de
 | [Effects](effects.md) | `chili/fx.hpp` | Particles, floating text, shake, dim, panels, text with shadow |
 | Theme | `chili/ui.hpp` | Shared colours and one hook for menu sounds |
 
+!!! tip "Coming next: RPG parts"
+    Tile maps, grid movement, stats, inventory, bump combat, enemy AI, dialogue and quests are planned. See the [RPG expansion plan](rpg-plan.md).
+
 ## How it fits together
 
 Your game keeps 32blit's `init()`, `update()` and `render()`. The SDK has no game loop of its own: you call its parts from yours.
