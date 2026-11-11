@@ -61,7 +61,7 @@ What we leave out, on purpose:
 | --- | --- | --- |
 | A scripting language (Lua, own VM) | Big, slow on the console, hard for a no-code editor | Events: a list of conditions and a list of actions |
 | ECS or a component system | Too much structure for 32 actors per room | Plain structs |
-| Real-time action combat | Clashes with bump combat and turns | A C++ game can skip the turn system and use the parts it wants |
+| Real-time mode (for now) | Turns come first; real time builds on the same parts | Planned later in [#28](https://github.com/chili-chip/chili-game-sdk/issues/28): actors step on timers, bumps get a cooldown |
 | Turn-based battle screens (menu fights) | Not asked for, a big part of its own | Bump combat |
 | Random dungeons | Not asked for | Hand-made rooms; a later issue if wanted |
 | Parties, shops, crafting, magic | Not asked for | Items with events cover simple shops and spells |
@@ -272,6 +272,7 @@ Each part is one issue and one pull request, with tests and a docs page.
 | 9 | Quests and story | [#24](https://github.com/chili-chip/chili-game-sdk/issues/24) | 1, 7, 8 |
 | 10 | Save the RPG state | [#25](https://github.com/chili-chip/chili-game-sdk/issues/25) | 3–9 |
 | 11 | Demo RPG, rpg-template and release v0.2.0 | [#26](https://github.com/chili-chip/chili-game-sdk/issues/26) | all |
+| 12 | Real-time mode (later, after v0.2.0) | [#28](https://github.com/chili-chip/chili-game-sdk/issues/28) | 3, 5, 6 |
 
 ```mermaid
 flowchart LR
