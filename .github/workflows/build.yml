@@ -110,5 +110,5 @@ jobs:
       - name: Validate the RPG demo's game file
         if: matrix.test
         run: |
-          pip3 install jsonschema
+          pip3 install "jsonschema>=4.18"
           python3 main/format/validate.py main/examples/rpg/assets/pepper.rpg
