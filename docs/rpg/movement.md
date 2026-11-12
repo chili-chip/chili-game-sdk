@@ -17,7 +17,12 @@ After the player's turn, each other actor thinks once, in the room's order. Then
 
 ## Smooth steps
 
-A step moves the actor at once on the grid, and its sprite slides from the old tile over `step_ms` (from the file's [rules](game-file.md#rules)). The next input waits until every slide is done. Holding the D-pad keeps walking, one step per `step_ms`.
+A step moves the actor at once on the grid, and its sprite slides from the old tile over `step_ms` (from the file's [rules](game-file.md#rules)). A D-pad press steps at once. A press made while something still slides is kept and runs when the slide ends, so quick taps are never lost. Holding the D-pad waits `repeat_ms` and then keeps walking, one step per `step_ms`. So a slow tap is always one step.
+
+| Rule | Default | |
+| --- | --- | --- |
+| `step_ms` | 80 | How long a step slides |
+| `repeat_ms` | 250 | How long to hold before walking on |
 
 Attacks show as a short lunge towards the target.
 

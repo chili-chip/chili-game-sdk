@@ -234,6 +234,7 @@ private:
   Event bump_event(const Actor &a) const;
   Index talk_of(const Actor &a) const;
   int damage(const Actor &attacker, const Actor &defender);
+  void pad(uint32_t held, int &dx, int &dy) const;
   void slide(Actor &a, int dx, int dy, int px);
   void play_room_music();
 
@@ -254,6 +255,8 @@ private:
   Index warp_room = NONE;
   uint8_t warp_x = 0, warp_y = 0;
   uint16_t fade_ms = 0;
+  uint16_t hold_ms = 0;         // how long the D-pad has been held
+  int8_t queued_dx = 0, queued_dy = 0;  // a D-pad press made while busy
   bool fading_in = false;
 };
 

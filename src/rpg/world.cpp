@@ -212,26 +212,40 @@ void World::update(uint32_t dt) {
   if(result_ != Result::playing) return;
 
   uint32_t pressed = buttons.pressed;
+  uint32_t held = buttons.state;
+  // D-pad: a press steps once (kept if it comes during a slide); holding waits
+  // repeat_ms and then keeps walking, so a slow tap never moves two tiles
+  int dx = 0, dy = 0;
+  pad(held, dx, dy);
+  if(dx || dy) hold_ms = std::min<int>(hold_ms + dt, 0xffff);
+  else hold_ms = 0;
+  if(pressed & (Button::DPAD_LEFT | Button::DPAD_RIGHT | Button::DPAD_UP | Button::DPAD_DOWN)) {
+    hold_ms = 0;
+    queued_dx = dx;
+    queued_dy = dy;
+  }
+
   if(box.active()) {
+    queued_dx = queued_dy = 0;
     if(box.update(dt, pressed)) next_line();
     return;
   }
   if(screen_ != Screen::none) {
+    queued_dx = queued_dy = 0;
     update_screen(pressed);
     return;
   }
   if(busy()) return;
 
-  uint32_t held = buttons.state;
-  int dx = 0, dy = 0;
-  if(held & Button::DPAD_LEFT) dx = -1;
-  else if(held & Button::DPAD_RIGHT) dx = 1;
-  if(held & Button::DPAD_UP) dy = -1;
-  else if(held & Button::DPAD_DOWN) dy = 1;
-  if(!game.diagonal && dx && dy) dy = 0;
-
-  if(dx || dy) {
+  if(queued_dx || queued_dy) {
+    dx = queued_dx;
+    dy = queued_dy;
+    queued_dx = queued_dy = 0;
     player_turn(dx, dy);
+  } else if((dx || dy) && hold_ms >= game.repeat_ms) {
+    player_turn(dx, dy);
+  } else if(dx || dy) {
+    // held, still waiting to repeat
   } else if(pressed & Button::A) {
     // talk to whoever the player faces
     int f = int(player.facing);
@@ -292,6 +306,14 @@ Index World::talk_of(const Actor &a) const {
 Event World::bump_event(const Actor &a) const {
   if(a.spawn >= 0 && !room().actors[a.spawn].bump.empty()) return room().actors[a.spawn].bump;
   return game.kinds[a.kind].bump;
+}
+
+void World::pad(uint32_t held, int &dx, int &dy) const {
+  if(held & Button::DPAD_LEFT) dx = -1;
+  else if(held & Button::DPAD_RIGHT) dx = 1;
+  if(held & Button::DPAD_UP) dy = -1;
+  else if(held & Button::DPAD_DOWN) dy = 1;
+  if(!game.diagonal && dx && dy) dy = 0;
 }
 
 void World::slide(Actor &a, int dx, int dy, int px) {

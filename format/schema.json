@@ -29,7 +29,8 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "step_ms": { "type": "integer", "minimum": 0, "maximum": 1000, "default": 120 },
+        "step_ms": { "type": "integer", "minimum": 0, "maximum": 1000, "default": 80 },
+        "repeat_ms": { "type": "integer", "minimum": 0, "maximum": 1000, "default": 250 },
         "diagonal": { "type": "boolean", "default": false },
         "bag": { "type": "integer", "minimum": 1, "maximum": 32, "default": 16 },
         "spread": { "type": "integer", "minimum": 0, "maximum": 99, "default": 0 },

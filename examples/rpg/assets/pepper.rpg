@@ -7,7 +7,7 @@
   "background": "#222323",
   "start": { "room": "village", "x": 6, "y": 5 },
   "player": { "sprite": 4 },
-  "rules": { "step_ms": 110, "bag": 12, "spread": 1, "crit": 10 },
+  "rules": { "step_ms": 80, "bag": 12, "spread": 1, "crit": 10 },
 
   "stats": [
     { "id": "hp", "label": "HP", "start": 12 },

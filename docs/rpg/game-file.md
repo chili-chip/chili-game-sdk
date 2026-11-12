@@ -17,7 +17,7 @@ std::string err = world.load(text);  // "" when it loaded
   "background": "#222323",
   "start": { "room": "village", "x": 6, "y": 5 },
   "player": { "sprite": 4 },
-  "rules": { "step_ms": 110, "bag": 12, "spread": 1, "crit": 10 },
+  "rules": { "step_ms": 80, "bag": 12, "spread": 1, "crit": 10 },
 
   "stats": [
     { "id": "hp", "label": "HP", "start": 12 },
@@ -78,7 +78,8 @@ Flags and variables need no list: naming one in an [event](events.md) creates it
 
 | Field | Default | Meaning |
 | --- | --- | --- |
-| `step_ms` | `120` | How long one step slides, in ms. Holding the D-pad walks one step per `step_ms`. |
+| `step_ms` | `80` | How long one step slides, in ms. Holding the D-pad walks one step per `step_ms`. |
+| `repeat_ms` | `250` | How long the D-pad must be held before it keeps walking, in ms. A shorter tap is one step. |
 | `diagonal` | `false` | Allow diagonal steps (two D-pad buttons at once), for the player and the brains. |
 | `bag` | `16` | Bag slots, 1 to 32. |
 | `spread` | `0` | Damage varies by up to this much either way. |

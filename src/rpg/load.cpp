@@ -404,6 +404,7 @@ struct Loader {
     Ref rules = root.get("rules");
     if(rules && !rules.is_object()) return fail("rules", "not an object");
     if(!number(rules, "step_ms", "rules", 0, 1000, g.step_ms)) return false;
+    if(!number(rules, "repeat_ms", "rules", 0, 1000, g.repeat_ms)) return false;
     if(!flag(rules, "diagonal", "rules", g.diagonal)) return false;
     if(!number(rules, "bag", "rules", 1, MAX_BAG, g.bag_size)) return false;
     if(!number(rules, "spread", "rules", 0, 99, g.spread)) return false;

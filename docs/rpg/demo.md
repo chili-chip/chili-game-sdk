@@ -30,7 +30,7 @@ Green circles save the game. Fire hurts. Slimes run when they are hurt, and some
 | Part | In the demo |
 | --- | --- |
 | [Maps](maps.md) | A village (24x18, scrolls) and a cave (32x18); water, trees, fire; a warp each way; three triggers |
-| [Movement](movement.md) | Step time 110 ms; the villager acts every 2 turns |
+| [Movement](movement.md) | Step time 80 ms, repeat after 250 ms; the villager acts every 2 turns |
 | [Stats](stats.md) | HP, MAX, ATK, DEF; 5 levels |
 | [Combat](combat.md) | Spread 1, crits 10%; drops; the key from the skeleton |
 | [Enemy AI](ai.md) | still (elder, smith), wander (villager), patrol (dog), coward (slime), chase (spider), guard (skeleton) |

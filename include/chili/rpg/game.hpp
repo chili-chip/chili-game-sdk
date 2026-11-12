@@ -248,7 +248,8 @@ struct Game {
   bool player_flip = true;
   uint8_t player_frames = 1;
 
-  uint16_t step_ms = 120;
+  uint16_t step_ms = 80;
+  uint16_t repeat_ms = 250;  // a held D-pad waits this long before it keeps walking
   bool diagonal = false;
   uint8_t bag_size = 16;
 
