@@ -31,15 +31,65 @@ TEST(take_removes_and_closes_up_the_bag) {
   CHECK_EQ(w.state.bag[0].item, key);
 }
 
-TEST(walking_over_an_item_picks_it_up_once) {
+TEST(walking_over_an_item_leaves_it_and_a_takes_it) {
   World w;
   CHECK(play::start(w));
+  Index jelly = play::item(w, "jelly");
   play::place(w, 5, 5);
   play::press(w, Button::DPAD_RIGHT);
-  CHECK_EQ(w.count(play::item(w, "jelly")), 1);
-  play::press(w, Button::DPAD_LEFT);
-  play::press(w, Button::DPAD_RIGHT);
-  CHECK_EQ(w.count(play::item(w, "jelly")), 1);
+  CHECK_EQ(w.count(jelly), 0);
+  CHECK_EQ(w.item_at(6, 5), jelly);
+  play::press(w, Button::A);
+  CHECK_EQ(w.count(jelly), 1);
+  CHECK_EQ(w.item_at(6, 5), chili::rpg::NONE);
+  play::press(w, Button::A);
+  CHECK_EQ(w.count(jelly), 1);
+}
+
+TEST(a_dropped_item_lies_where_the_player_stands) {
+  World w;
+  CHECK(play::start(w));
+  Index jelly = play::item(w, "jelly");
+  w.give(jelly, 2);
+  play::place(w, 3, 3);
+  w.drop(0);
+  CHECK_EQ(w.count(jelly), 0);
+  CHECK_EQ(w.item_at(3, 3), jelly);
+  w.render(0);
+  play::press(w, Button::A);
+  CHECK_EQ(w.count(jelly), 2);  // the whole stack comes back
+  CHECK_EQ(w.item_at(3, 3), chili::rpg::NONE);
+}
+
+TEST(dropped_items_stay_in_their_room_and_in_the_save) {
+  World w;
+  CHECK(play::start(w));
+  Index stick = play::item(w, "stick");
+  w.give(stick);
+  play::place(w, 3, 3);
+  w.drop(0);
+  w.warp(1, 1, 1, false);
+  CHECK_EQ(w.item_at(3, 3), chili::rpg::NONE);  // not in the cave
+  w.warp(0, 1, 1, false);
+  CHECK_EQ(w.item_at(3, 3), stick);
+  w.save();
+
+  World again;
+  CHECK(play::start(again));
+  CHECK(again.load_save());
+  CHECK_EQ(again.item_at(3, 3), stick);
+}
+
+TEST(the_floor_has_room_for_max_floor_drops) {
+  World w;
+  CHECK(play::start(w));
+  Index stick = play::item(w, "stick");
+  for(int i = 0; i <= MAX_FLOOR; i++) {
+    play::place(w, 1 + i % 10, 1 + i / 10);
+    w.give(stick);
+    w.drop(0);
+  }
+  CHECK_EQ(w.count(stick), 1);  // the last one did not fit
 }
 
 TEST(using_an_item_runs_its_event_and_uses_it_up) {
@@ -100,6 +150,7 @@ TEST(the_inventory_screen_uses_equips_and_drops) {
   CHECK_EQ(w.bag_used(), 2);
   play::press(w, Button::X);       // drop the jelly
   CHECK_EQ(w.bag_used(), 1);
+  CHECK_EQ(w.item_at(w.player.x, w.player.y), play::item(w, "jelly"));
   w.render(0);
   play::press(w, Button::B);
   CHECK(w.screen() == World::Screen::none);

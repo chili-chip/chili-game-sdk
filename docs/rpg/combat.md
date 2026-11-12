@@ -34,7 +34,7 @@ then  x 2, crit percent of the time
 
 1. It is gone for good: the room remembers it in the [save](save.md).
 2. If a [quest](quests.md) stage wants to defeat that kind, its count goes up.
-3. Each of its `drops` rolls its `chance`; drops go straight into the bag.
+3. Each of its `drops` rolls its `chance`; drops land on its tile, and the player picks them up with A.
 4. Its kind's `death` [event](events.md) runs.
 5. The player gets its `xp`.
 

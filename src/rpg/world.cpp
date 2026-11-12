@@ -247,7 +247,8 @@ void World::update(uint32_t dt) {
   } else if(dx || dy) {
     // held, still waiting to repeat
   } else if(pressed & Button::A) {
-    // talk to whoever the player faces
+    // pick up what lies here, else talk to whoever the player faces
+    if(pick_up()) return;
     int f = int(player.facing);
     if(Actor *a = actor_at(player.x + DX[f], player.y + DY[f]); a && a != &player && game.kinds[a->kind].friendly)
       interact(*a);
@@ -343,17 +344,8 @@ void World::after_step(Actor &a) {
 
   const Room &r = room();
   RoomState &rs = state.rooms[state.room];
-  for(size_t i = 0; i < r.items.size(); i++) {
-    const RoomItem &it = r.items[i];
-    if(rs.taken & (1u << i) || it.x != a.x || it.y != a.y) continue;
-    if(give(it.item, it.count) == 0) {
-      rs.taken |= 1u << i;
-      play(Sound::pickup);
-      popup(a.x, a.y, game.items[it.item].name, theme.gold);
-    } else {
-      popup(a.x, a.y, "BAG FULL", theme.dim);
-    }
-  }
+  // items stay on the floor until A picks them up; say what lies here
+  if(Index it = item_at(a.x, a.y); it != NONE) popup(a.x, a.y, game.items[it].name, theme.dim);
   for(size_t i = 0; i < r.triggers.size(); i++) {
     const Trigger &tr = r.triggers[i];
     if(tr.x != a.x || tr.y != a.y || (tr.once && rs.fired & (1u << i))) continue;
@@ -637,6 +629,8 @@ void World::render(uint32_t time) {
   const RoomState &rs = state.rooms[state.room];
   for(size_t i = 0; i < r.items.size(); i++)
     if(!(rs.taken & (1u << i))) draw_sprite(game.items[r.items[i].item].icon, Point(r.items[i].x * TILE, r.items[i].y * TILE) - cam);
+  for(auto &f : state.floor)
+    if(f.room == state.room) draw_sprite(game.items[f.item].icon, Point(f.x * TILE, f.y * TILE) - cam);
 
   auto draw_actor = [&](const Actor &a, const uint8_t *sprites, bool flip_left, uint8_t frames) {
     if(!a.alive || (a.flash_ms && (a.flash_ms / 50) % 2)) return;

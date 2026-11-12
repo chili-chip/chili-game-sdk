@@ -124,9 +124,70 @@ void World::drop(int i) {
     play(Sound::bump);
     return;
   }
+  if(!put(state.bag[i].item, state.bag[i].count, player.x, player.y)) {
+    popup(player.x, player.y, "NO ROOM", theme.dim);
+    play(Sound::bump);
+    return;
+  }
   bool was_equipped = state.bag[i].equipped;
   remove_slot(i);
   if(was_equipped) player.stats[game.hp] = std::min<int>(player.stats[game.hp], stat(player, game.max_hp));
+}
+
+// ---------------------------------------------------------------------------
+// The floor
+
+Index World::item_at(int x, int y) const {
+  const Room &r = room();
+  const RoomState &rs = state.rooms[state.room];
+  for(size_t i = 0; i < r.items.size(); i++)
+    if(!(rs.taken & (1u << i)) && r.items[i].x == x && r.items[i].y == y) return r.items[i].item;
+  for(auto &f : state.floor)
+    if(f.room == state.room && f.x == x && f.y == y) return f.item;
+  return NONE;
+}
+
+bool World::put(Index item, int count, int x, int y) {
+  if(item < 0 || item >= Index(game.items.size()) || count <= 0) return false;
+  for(auto &f : state.floor)
+    if(f.room == NONE) {
+      f = FloorItem{state.room, item, uint8_t(x), uint8_t(y), uint8_t(std::min(count, 255))};
+      return true;
+    }
+  return false;
+}
+
+bool World::pick_up() {
+  const Room &r = room();
+  RoomState &rs = state.rooms[state.room];
+  bool found = false, full = false;
+  auto take_one = [&](Index item, uint8_t &n) {
+    found = true;
+    int left = give(item, n);
+    if(left < n) popup(player.x, player.y, game.items[item].name, theme.gold);
+    if(left) full = true;
+    n = uint8_t(left);
+  };
+  for(size_t i = 0; i < r.items.size(); i++) {
+    const RoomItem &it = r.items[i];
+    if(rs.taken & (1u << i) || it.x != player.x || it.y != player.y) continue;
+    uint8_t n = it.count;
+    take_one(it.item, n);
+    if(n == 0) rs.taken |= 1u << i;
+    else if(n < it.count) {  // part of it fit: the rest lies on the floor
+      rs.taken |= 1u << i;
+      put(it.item, n, it.x, it.y);
+    }
+  }
+  for(auto &f : state.floor) {
+    if(f.room != state.room || f.x != player.x || f.y != player.y) continue;
+    take_one(f.item, f.count);
+    if(f.count == 0) f = FloorItem{};
+  }
+  if(full) popup(player.x, player.y - 1, "BAG FULL", theme.dim);
+  if(found && !full) play(Sound::pickup);
+  if(found) check_quests();  // a collect goal can be met now
+  return found;
 }
 
 // ---------------------------------------------------------------------------

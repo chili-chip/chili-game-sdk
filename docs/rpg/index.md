@@ -117,7 +117,7 @@ sequenceDiagram
     P->>W: D-pad, A or B
     alt empty tile
         W->>W: step (slides over step_ms)
-        W->>W: pick up items, damage tiles, triggers, save tiles, warps
+        W->>W: damage tiles, triggers, save tiles, warps
     else enemy there
         W->>E: bump attack
     else friendly actor there
@@ -136,7 +136,7 @@ While dialogue, the bag or the quest log is open, the world does not take turns.
 | Button | Does |
 | --- | --- |
 | D-pad | Walk; walk into an enemy to attack, into a person to talk |
-| A | Talk to whoever you face; next line; pick a choice |
+| A | Pick up what lies here, else talk to whoever you face; next line; pick a choice |
 | B | Wait a turn; show the whole page of text |
 | X | Bag ([inventory](inventory.md)) |
 | Y | [Quest log](quests.md#the-quest-log) |

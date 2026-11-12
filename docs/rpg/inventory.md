@@ -47,8 +47,21 @@ A `use` event with an `if` only uses up the item when the `if` passes; its `else
 
 - Its size is `bag` in the [rules](game-file.md#rules), up to 32 slots.
 - New items fill stacks first, then empty slots.
-- Walking over an item on the floor picks it up. When the bag is full, it stays there and "BAG FULL" shows.
 - Taking items takes unequipped ones first.
+
+## Items on the floor
+
+Items lie on the floor until the player picks them up. Walking onto one shows its name. A picks up everything on the player's tile; it takes no turn. When the bag is full, what does not fit stays and "BAG FULL" shows.
+
+Floor items come from three places:
+
+| From | Where it lies |
+| --- | --- |
+| A room's `items` in the [game file](maps.md#rooms) | Where the file puts it |
+| The player drops it from the bag | Where the player stands; the whole stack |
+| A beaten enemy's `drops` | Where the enemy fell |
+
+Dropped items stay in their room and are [saved](save.md). Up to 32 dropped items lie in the whole game at once (`MAX_FLOOR`). When that is full, a drop shows "NO ROOM" and the item stays in the bag.
 
 ## Equipment
 
@@ -62,7 +75,7 @@ X opens it. It takes no turn.
 | --- | --- |
 | Up / down | Picks an item |
 | A | Uses, puts on or takes off the item |
-| X, then X again | Drops the item (keys and quest items cannot be dropped) |
+| X, then X again | Drops the item where the player stands (keys and quest items cannot be dropped) |
 | B | Closes the bag (X too, when it is empty) |
 
 It draws with [`chili::theme`](../menu.md), so restyling the theme restyles the bag. `world.draw_inventory(time)` draws it; you can draw your own screen instead and call the same functions.
@@ -78,7 +91,10 @@ int took = world.take(potion, 1);  // how many it took
 int have = world.count(potion);
 world.use_item(0);                 // bag slot 0
 world.equip(1);                    // put on, or take off
-world.drop(2);
+world.drop(2);                     // onto the player's tile
+world.put(potion, 1, 5, 7);        // lay one on a tile of this room
+world.pick_up();                   // what A does on an item
+chili::rpg::Index here = world.item_at(5, 7);
 ```
 
 ### `on_use_item`

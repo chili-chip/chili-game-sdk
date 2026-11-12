@@ -56,7 +56,7 @@ Each tile type has one character (its `key`) and a sprite from the sheet.
 | `name` | For your own HUD. |
 | `music` | A song id. It starts when the player enters the room (and keeps playing if it is already on). |
 | `actors` | People, enemies and doors. See [kinds](ai.md#kinds). |
-| `items` | Items lying on the floor. The player picks them up by walking over them. `count` defaults to 1. |
+| `items` | Items lying on the floor. The player picks them up with A. `count` defaults to 1. See [items on the floor](inventory.md#items-on-the-floor). |
 | `warps` | Step on `x, y` and go to room `to`, tile `tx, ty`. |
 | `triggers` | Step on `x, y` and run an [event](events.md). |
 
@@ -95,7 +95,7 @@ A trigger whose `if` fails and has no `else` does nothing and stays ready.
 
 ## What a room remembers
 
-Each room keeps three sets of bits in the [save](save.md): actors that are gone (dead or removed), floor items taken, and one-time triggers fired. So a dead enemy stays dead and a picked-up item stays picked up. Living enemies come back to their place and full health when you come back.
+Each room keeps three sets of bits in the [save](save.md): actors that are gone (dead or removed), floor items taken, and one-time triggers fired. So a dead enemy stays dead and a picked-up item stays picked up. Items the player or enemies dropped are saved too. Living enemies come back to their place and full health when you come back.
 
 ## Drawing tiles your way
 

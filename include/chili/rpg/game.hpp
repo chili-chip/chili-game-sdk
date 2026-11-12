@@ -26,6 +26,7 @@ constexpr int MAX_KINDS = 64;
 constexpr int MAX_ACTORS = 32;      // per room, also items and triggers
 constexpr int MAX_ITEMS = 128;
 constexpr int MAX_BAG = 32;
+constexpr int MAX_FLOOR = 32;     // items dropped on the floor, in all rooms together
 constexpr int MAX_SLOTS = 8;        // equipment slots
 constexpr int MAX_FLAGS = 256;
 constexpr int MAX_VARS = 64;

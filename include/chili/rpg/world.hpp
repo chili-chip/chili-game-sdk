@@ -53,6 +53,15 @@ struct BagSlot {
   bool equipped = false;
 };
 
+// An item lying on the floor that was not in the file: dropped by the player
+// or by a beaten enemy.
+struct FloorItem {
+  Index room = NONE;
+  Index item = NONE;
+  uint8_t x = 0, y = 0;
+  uint8_t count = 0;
+};
+
 // What changed in each room: actors gone (dead, or removed), items picked
 // up and one-time triggers fired. One bit per entry in the room's lists.
 struct RoomState {
@@ -76,6 +85,7 @@ struct State {
   uint8_t quests[MAX_QUESTS] = {};    // 0 not started, 1.. stage, DONE
   int16_t progress[MAX_QUESTS] = {};  // talks or defeats towards the stage goal
   RoomState rooms[MAX_ROOMS];
+  FloorItem floor[MAX_FLOOR];
 
   static constexpr uint8_t DONE = 0xff;
 };
@@ -146,6 +156,8 @@ public:
   // How many of an item the player has (equipped ones count).
   int count(Index item) const;
   int bag_used() const;
+  // An item lying on a tile of this room, or NONE.
+  Index item_at(int x, int y) const;
   // The actor standing on a tile, or nullptr.
   Actor *actor_at(int x, int y);
   // True for solid or water tiles and the room's edges. With `sight`, only
@@ -175,7 +187,12 @@ public:
   void use_item(int bag_index);
   // Equips an item, or takes it off when it is already equipped.
   void equip(int bag_index);
+  // Puts the item down where the player stands. Keys and quest items stay.
   void drop(int bag_index);
+  // Lays items on a tile of this room. False when the floor is full.
+  bool put(Index item, int count, int x, int y);
+  // Picks up everything on the player's tile. False when nothing was there.
+  bool pick_up();
   void say(Index dialogue);
   void set_quest(Index quest, int stage);
   void finish_quest(Index quest);

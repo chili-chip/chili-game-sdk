@@ -76,7 +76,7 @@ A choice can also have `if` and `else`: then `do` only runs when its conditions 
 
 ## Talking
 
-The player talks to a friendly actor by walking into it, or by pressing A while facing it. Talking takes no turn.
+The player talks to a friendly actor by walking into it, or by pressing A while facing it (when nothing lies on the player's tile). Talking takes no turn.
 
 1. A quest stage that wants to `talk` to that kind is met.
 2. The actor's `talk` dialogue starts (the room's actor overrides its kind's).

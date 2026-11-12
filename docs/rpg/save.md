@@ -15,6 +15,7 @@ The RPG state is one plain struct, `chili::rpg::State`, written with [`chili::Sa
 | The bag | Items, counts, what is equipped |
 | Story | Flags, variables, quest stages and their counts, turn number |
 | Each room | Actors gone (dead or removed), floor items taken, one-time triggers fired |
+| The floor | Items dropped by the player or beaten enemies |
 
 Not saved: where living enemies stand and how hurt they are. They are back in place at full health when the room loads.
 

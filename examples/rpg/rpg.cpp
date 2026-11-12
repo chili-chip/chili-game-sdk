@@ -52,7 +52,7 @@ void go_title();
 void go_play(bool from_save);
 
 struct Help : chili::Scene {
-  chili::TextScreen page{"HOW TO PLAY", {"D-PAD  walk, bump to fight", "A      talk, next line", "B      wait a turn", "X      bag", "Y      quests", "MENU   pause"}};
+  chili::TextScreen page{"HOW TO PLAY", {"D-PAD  walk, bump to fight", "A      pick up, talk", "B      wait a turn", "X      bag", "Y      quests", "MENU   pause"}};
   void update(uint32_t) override {
     if(page.update(scenes.pressed())) go_title();
   }

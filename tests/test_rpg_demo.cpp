@@ -71,11 +71,14 @@ TEST(the_demo_story_plays_to_the_end) {
   Actor *sk = play::find(w, "skeleton");
   while(sk->alive) w.attack(w.player, *sk);
   play::settle(w);
+  play::place(w, sk->x, sk->y);  // the key lies where it fell
+  play::press(w, Button::A);
   CHECK_EQ(w.count(play::item(w, "key")), 1);
   bump(w, "door");
   CHECK(play::find(w, "door") == nullptr);
   play::place(w, 26, 5);
   play::press(w, Button::DPAD_RIGHT);
+  play::press(w, Button::A);  // pick up the stone
   CHECK_EQ(w.state.quests[stone], 4);
 
   w.warp(Game::find(w.game.rooms, "village"), 10, 10, false);

@@ -34,7 +34,8 @@ TEST(a_kill_gives_xp_drops_and_counts_as_gone) {
   play::press(w, Button::DPAD_RIGHT);
   CHECK(!slime->alive);
   CHECK_EQ(w.state.xp, 3);
-  CHECK_EQ(w.count(play::item(w, "jelly")), 1);  // 100% drop
+  CHECK_EQ(w.count(play::item(w, "jelly")), 0);
+  CHECK_EQ(w.item_at(slime->x, slime->y), play::item(w, "jelly"));  // 100% drop, on the floor
   CHECK(w.state.rooms[0].gone & 2);
   // it stays dead when the player comes back
   w.warp(1, 1, 1, false);

@@ -8,7 +8,7 @@
 namespace chili::rpg {
 
 namespace {
-constexpr uint16_t SAVE_VERSION = 1;
+constexpr uint16_t SAVE_VERSION = 2;
 }
 
 void World::save() const {

@@ -100,8 +100,7 @@ void World::die(Actor &a) {
     if(g.type == Goal::Type::defeat && g.target == a.kind) state.progress[q]++;
   }
   for(auto &d : k.drops)
-    if(int(blit::random() % 100) < d.chance && give(d.item, d.count) < d.count)
-      popup(a.x, a.y + 1, game.items[d.item].name, theme.gold);
+    if(int(blit::random() % 100) < d.chance) put(d.item, d.count, a.x, a.y);
   run(k.death, &a);
   gain_xp(k.xp);
 }
