@@ -1,5 +1,5 @@
 site_name: chili game SDK
-site_description: Menus, scenes, saves, high scores, music and effects for chilichip console games.
+site_description: Menus, scenes, saves, high scores, music, effects and RPG parts for chilichip console games.
 site_url: https://game-sdk.chilichip.eu/
 repo_url: https://github.com/chili-chip/chili-game-sdk
 repo_name: chili-chip/chili-game-sdk
@@ -80,6 +80,22 @@ nav:
       - Save and high scores: save.md
       - Music and sound: audio.md
       - Effects: effects.md
+      - Text box: dialogue.md
+  - RPG:
+      - Overview: rpg/index.md
+      - Game file: rpg/game-file.md
+      - Events: rpg/events.md
+      - Maps: rpg/maps.md
+      - Movement and turns: rpg/movement.md
+      - Stats and levels: rpg/stats.md
+      - Combat: rpg/combat.md
+      - Enemy AI: rpg/ai.md
+      - Inventory: rpg/inventory.md
+      - Dialogue: rpg/dialogue.md
+      - Quests and story: rpg/quests.md
+      - Save: rpg/save.md
+      - Hooks: rpg/hooks.md
+      - Pepper Village: rpg/demo.md
   - The demo game: demo.md
   - Development: development.md
 

@@ -1,0 +1,10 @@
+title: Pepper Village
+description: Bring back the sun stone. A demo RPG for the chili game SDK. Art by Kenney (CC0).
+author: chilichip
+splash:
+  file: assets/splash.png
+icon:
+  file: assets/icon.png
+version: v0.2.0
+category: demo
+url: https://github.com/chili-chip/chili-game-sdk

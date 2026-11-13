@@ -106,3 +106,9 @@ jobs:
       - name: Test
         if: matrix.test
         run: ctest --test-dir build --output-on-failure
+
+      - name: Validate the RPG demo's game file
+        if: matrix.test
+        run: |
+          pip3 install "jsonschema>=4.18"
+          python3 main/format/validate.py main/examples/rpg/assets/pepper.rpg
