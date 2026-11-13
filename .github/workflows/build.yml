@@ -40,19 +40,19 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           path: main
 
       - name: Checkout 32blit SDK
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           repository: chili-chip/32blit-sdk
           path: 32blit-sdk
 
       - name: Checkout Pico SDK
         if: matrix.pico
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           repository: chili-chip/pico-sdk
           path: pico-sdk
@@ -60,7 +60,7 @@ jobs:
 
       - name: Checkout Pico Extras
         if: matrix.pico
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           repository: chili-chip/pico-extras
           path: pico-extras
@@ -72,14 +72,14 @@ jobs:
 
       - name: Setup Emscripten cache
         if: matrix.name == 'Web'
-        uses: actions/cache@v6
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ${{env.EM_CACHE_FOLDER}}
           key: ${{env.EM_VERSION}}-${{runner.os}}
 
       - name: Setup Emscripten
         if: matrix.name == 'Web'
-        uses: mymindstorm/setup-emsdk@v16
+        uses: emscripten-core/setup-emsdk@4528d102f7230f0e7b276855c01ea1159be0e984 # v16
         with:
           version: ${{env.EM_VERSION}}
           actions-cache-folder: ${{env.EM_CACHE_FOLDER}}
