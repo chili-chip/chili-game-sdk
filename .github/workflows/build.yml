@@ -42,11 +42,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
+          persist-credentials: false
           path: main
 
       - name: Checkout 32blit SDK
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
+          persist-credentials: false
           repository: chili-chip/32blit-sdk
           path: 32blit-sdk
 
@@ -54,6 +56,7 @@ jobs:
         if: matrix.pico
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
+          persist-credentials: false
           repository: chili-chip/pico-sdk
           path: pico-sdk
           submodules: true
@@ -62,6 +65,7 @@ jobs:
         if: matrix.pico
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
+          persist-credentials: false
           repository: chili-chip/pico-extras
           path: pico-extras
 
