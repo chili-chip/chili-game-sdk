@@ -57,7 +57,8 @@ Flags and variables need no list: naming one in an [event](events.md) creates it
 | `version` | `1` | yes | The format version. |
 | `title` | text | yes | The game's name. |
 | `author` | text | | Who made it. |
-| `sprites` | text | | The sprite sheet's file name, for the player app. C++ games set `world.sheet`. |
+| `sprites` | text | | The sprite sheet's file name. C++ games load it and set `world.sheet`. |
+| `art` | [art](#art) | | The game's own pictures, inside the file. Wins over `sprites`. |
 | `background` | `"#rrggbb"` | | Clears the screen behind the map. Default black. |
 | `start` | `{room, x, y}` | yes | Where a new game starts. |
 | `player` | [look](#looks) | yes | The player's sprites. |
@@ -98,6 +99,56 @@ The player and every kind of actor use the same fields for their sprites.
 
 Sprites are 8x8 cells of the sprite sheet, numbered left to right, top to bottom, from 0.
 
+## Art
+
+A game file can carry its own pictures, so one file is the whole game. The creator's RPG editor and the RPG player app use this. C++ games can too.
+
+![Pepper Village with its art inside the file, in Sweetie 16](../assets/shots/rpg-art.png){ width="384" }
+
+```json
+"art": {
+  "palette": "sweetie16",
+  "pictures": [
+    ["..0000..", ".0cccc0.", "0c0cc0c0", "0cccccc0", "0c0000c0", "0cc00cc0", ".0cccc0.", "..0000.."],
+    ["22222222", "22222222", "22222222", "22222222", "22222222", "22222222", "22222222", "22222222"]
+  ]
+}
+```
+
+| Field | Meaning |
+| --- | --- |
+| `palette` | `"sweetie16"`, the only one for now. Can be left out. |
+| `pictures` | Up to 256 pictures. Picture *n* is sprite *n*, so `"sprite": 1` above is the red square. |
+
+A picture is 8 rows of 8 characters:
+
+| Character | Colour |
+| --- | --- |
+| `.` | Clear: what is under it shows |
+| `0` to `f` | A colour of [Sweetie 16](https://lospec.com/palette-list/sweetie-16) by GrafxKid, the same palette as Chili Beat |
+
+| | | | | | | | |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `0` `#1a1c2c` | `1` `#5d275d` | `2` `#b13e53` | `3` `#ef7d57` | `4` `#ffcd75` | `5` `#a7f070` | `6` `#38b764` | `7` `#257179` |
+| `8` `#29366f` | `9` `#3b5dc9` | `a` `#41a6f6` | `b` `#73eff7` | `c` `#f4f4f4` | `d` `#94b0c2` | `e` `#566c86` | `f` `#333c57` |
+
+When the file loads, the world lays the pictures out as one 128x128 sheet, 16 to a row, and draws from it. Sprite numbers with no picture are clear. The sheet takes 16 KB of RAM.
+
+### From a PNG sheet
+
+`tools/art_from_sheet.py` puts a PNG sheet into a game file. Each 8x8 cell becomes a picture in the nearest Sweetie 16 colour, and pixels under half alpha become clear.
+
+```sh
+pip install pillow
+python tools/art_from_sheet.py examples/rpg/assets/pepper.rpg examples/rpg/assets/sheet.png examples/rpg/assets/pepper-village.rpg
+```
+
+```text
+examples/rpg/assets/pepper-village.rpg: 140 pictures
+```
+
+The script replaces the `sprites` line with the `art` block and moves `background` to the nearest Sweetie 16 colour. The rest of the file stays as it was.
+
 ## Songs
 
 Songs use the [note strings of the music module](../audio.md#songs). A room plays its `music` when you enter it, and the `music` action switches songs.
@@ -124,6 +175,8 @@ Songs use the [note strings of the music module](../audio.md#songs). A room play
 | `rooms[0].ground[3]: no tile '?'` | A map character with no tile type. |
 | `dialogue[0].lines[2].choices[0].goto: no line "bye"` | A `goto` to a line id that does not exist. |
 | `stats: needs "hp" and "max_hp"` | The two fixed stats are missing. |
+| `art.pictures[3][2]: '0' to 'f' or '.'` | A picture row with a character that is not a colour. |
+| `art.pictures[0]: needs 8 rows` | A picture that is not 8x8. |
 
 On an error the world stays empty, so check the result while you write a game.
 

@@ -5,7 +5,11 @@ on:
     branches:
       - '**'
   pull_request:
+  release:
+    types: [published]
 
+# Read-only by default. Only `publish` may write: it attaches the files the
+# build jobs made and runs no code from this repository.
 permissions:
   contents: read
 
@@ -115,4 +119,84 @@ jobs:
         if: matrix.test
         run: |
           pip3 install "jsonschema>=4.18"
-          python3 main/format/validate.py main/examples/rpg/assets/pepper.rpg
+          python3 main/format/validate.py main/examples/rpg/assets/pepper.rpg main/examples/rpg/assets/pepper-village.rpg
+
+      - name: Upload the console apps
+        if: matrix.pico
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: chili-rpg-blit
+          path: build/**/chili-rpg.blit
+          if-no-files-found: error
+
+  # The RPG web player (players/rpg/web), for the creator and the platform.
+  web-player:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          path: main
+
+      - name: Checkout 32blit SDK
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          repository: chili-chip/32blit-sdk
+          path: 32blit-sdk
+
+      - name: Install the 32blit tools
+        run: pip3 install 32blit "bitstring<5"
+
+      - uses: emscripten-core/setup-emsdk@4528d102f7230f0e7b276855c01ea1159be0e984 # v16
+        with:
+          version: 6.0.9
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          # Major only: each run takes the newest security release of the LTS.
+          node-version: "26"
+
+      - name: Build
+        run: |
+          emcmake cmake -S main/players/rpg/web -B build-web -DCMAKE_BUILD_TYPE=Release -D32BLIT_DIR=$GITHUB_WORKSPACE/32blit-sdk
+          cmake --build build-web --target chili-rpg -j 2
+
+      - name: Test in Node
+        run: node main/players/rpg/web/test.mjs build-web
+
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: chili-rpg-web
+          path: |
+            build-web/chili-rpg.js
+            build-web/chili-rpg.wasm
+            build-web/player.js
+            build-web/index.html
+            build-web/pepper-village.rpg
+          if-no-files-found: error
+
+  # The only job that may write: it attaches the release files the build jobs
+  # made. It runs even when one build failed, so the other files still go up.
+  publish:
+    if: ${{ !cancelled() && github.event_name == 'release' }}
+    needs: [build, web-player]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          pattern: chili-rpg-*
+          path: release
+          merge-multiple: true
+      - name: Attach to release
+        uses: softprops/action-gh-release@8a0cd651e5b2365bd640854a3fa5dfc70e4875f3 # v3.0.4
+        with:
+          fail_on_unmatched_files: false
+          files: |
+            release/chili-rpg.blit
+            release/chili-rpg.js
+            release/chili-rpg.wasm
+            release/player.js

@@ -54,6 +54,7 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 
   option(CHILI_GAME_SDK_TESTS "Build the unit tests" ${CHILI_DESKTOP})
   option(CHILI_GAME_SDK_DEMO "Build the demo game" ON)
+  option(CHILI_GAME_SDK_PLAYERS "Build the player apps" ON)
 
   if(CHILI_GAME_SDK_TESTS)
     enable_testing()
@@ -64,5 +65,9 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
   if(CHILI_GAME_SDK_DEMO)
     add_subdirectory(examples/demo)
     add_subdirectory(examples/rpg)
+  endif()
+
+  if(CHILI_GAME_SDK_PLAYERS)
+    add_subdirectory(players/rpg)
   endif()
 endif()

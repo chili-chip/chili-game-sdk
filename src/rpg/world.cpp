@@ -57,9 +57,22 @@ World::World() {
 // ---------------------------------------------------------------------------
 // Loading and rooms
 
+// Sweetie 16, then clear, for sheets made from a file's art.
+static Pen *art_palette() {
+  static Pen pens[ART_CLEAR + 1];
+  for(int i = 0; i < 16; i++) pens[i] = Pen(int(SWEETIE16[i] >> 16), int((SWEETIE16[i] >> 8) & 0xff), int(SWEETIE16[i] & 0xff));
+  pens[ART_CLEAR] = Pen(0, 0, 0, 0);
+  return pens;
+}
+
 std::string World::load(std::string_view text) {
   std::string err = rpg::load(text, game);
   if(!err.empty()) return err;
+  if(!game.art.empty()) {
+    art_sheet = std::make_unique<Surface>(game.art.data(), PixelFormat::P, Size(ART_SIZE, ART_SIZE));
+    art_sheet->palette = art_palette();
+    sheet = art_sheet.get();
+  }
   songs.clear();
   for(auto &s : game.songs) songs.push_back(audio::Song{s.step_ms, true, s.lead.c_str(), s.bass.c_str(), s.drums.c_str()});
   new_game();

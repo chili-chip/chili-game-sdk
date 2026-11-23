@@ -96,6 +96,7 @@ nav:
       - Save: rpg/save.md
       - Hooks: rpg/hooks.md
       - Pepper Village: rpg/demo.md
+      - Player apps: rpg/players.md
   - The demo game: demo.md
   - Development: development.md
 

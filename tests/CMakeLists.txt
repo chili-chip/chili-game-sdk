@@ -15,7 +15,7 @@ foreach(name input menu screens save scores scene audio fx dialogue)
 endforeach()
 
 # RPG tests also see the RPG sources, for the parts that are not public.
-foreach(name rpg_json rpg_load rpg_events rpg_map rpg_turns rpg_stats rpg_combat rpg_ai rpg_items rpg_dialogue rpg_quests rpg_save rpg_demo)
+foreach(name rpg_json rpg_load rpg_events rpg_map rpg_turns rpg_stats rpg_combat rpg_ai rpg_items rpg_dialogue rpg_quests rpg_save rpg_demo rpg_art rpg_player)
   if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/test_${name}.cpp)
     continue()
   endif()
@@ -25,4 +25,9 @@ foreach(name rpg_json rpg_load rpg_events rpg_map rpg_turns rpg_stats rpg_combat
   add_test(NAME ${name} COMMAND test_${name})
 endforeach()
 
-target_compile_definitions(test_rpg_demo PRIVATE CHILI_DEMO_RPG="${PROJECT_SOURCE_DIR}/examples/rpg/assets/pepper.rpg")
+target_compile_definitions(test_rpg_demo PRIVATE
+  CHILI_DEMO_RPG="${PROJECT_SOURCE_DIR}/examples/rpg/assets/pepper.rpg"
+  CHILI_TEMPLATE_RPG="${PROJECT_SOURCE_DIR}/examples/rpg/assets/pepper-village.rpg")
+
+# The player app's test builds players/rpg/player.cpp with its template file.
+target_link_libraries(test_rpg_player PRIVATE chili-rpg-player-assets)

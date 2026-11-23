@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Chili RPG web player</title>
+  <style>
+    body { background: #1a1c2c; color: #f4f4f4; font: 16px system-ui, sans-serif; display: grid; place-items: center; gap: 12px; padding: 24px; }
+    canvas { width: 512px; max-width: 100%; aspect-ratio: 1; background: #000; }
+    p { margin: 0; color: #94b0c2; }
+  </style>
+</head>
+<body>
+  <canvas id="screen"></canvas>
+  <p>Arrows walk · Z talk and pick up · X wait · C bag · V quests</p>
+  <p><label>Play another .rpg file: <input id="file" type="file" accept=".rpg,.json"></label></p>
+  <p id="error"></p>
+  <script type="module">
+    import createChiliRpg from "./chili-rpg.js";
+    import { ChiliRpgPlayer } from "./player.js";
+    const player = await ChiliRpgPlayer.create(createChiliRpg);
+    const canvas = document.getElementById("screen");
+    const show = (text) => {
+      const error = player.load(text);
+      document.getElementById("error").textContent = error || "";
+      if (!error) player.start(canvas);
+    };
+    show(await (await fetch("pepper-village.rpg")).text());
+    document.getElementById("file").addEventListener("change", async (e) => {
+      if (e.target.files[0]) show(await e.target.files[0].text());
+    });
+    canvas.addEventListener("click", () => player.enableSound());
+  </script>
+</body>
+</html>

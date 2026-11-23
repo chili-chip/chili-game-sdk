@@ -132,3 +132,9 @@ TEST(rejects_duplicate_ids) {
   Game g;
   CHECK(has(load(fixture::edit("{ \"id\": \"stick\"", "{ \"id\": \"jelly\""), g), "items[1].id: \"jelly\" is used twice"));
 }
+
+TEST(reads_the_author) {
+  Game g;
+  CHECK(load(fixture::edit("\"title\": \"Test\",", "\"title\": \"Test\", \"author\": \"Ana\","), g).empty());
+  CHECK(g.author == "Ana");
+}

@@ -1,0 +1,13 @@
+title: Chili RPG
+description: Plays Chili RPG games made in the chili creator. Copy .rpg files onto the console's CHILICHIP drive.
+author: chilichip
+splash:
+  file: assets/splash.png
+icon:
+  file: assets/icon.png
+version: v0.2.0
+# A handler: chilichip OS hides this app from the home screen and lists the
+# .rpg files on the drive instead, opening each one with it.
+category: handler
+filetypes: rpg
+url: https://github.com/chili-chip/chili-game-sdk

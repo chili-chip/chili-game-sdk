@@ -39,7 +39,7 @@ Green circles save the game. Fire hurts. Slimes run when they are hurt, and some
 | [Quests](quests.md) | One quest with four stages: talk, defeat, collect, talk |
 | [Save](save.md) | Two save tiles, SAVE in the pause menu, CONTINUE on the title |
 
-The game file is [`assets/pepper.rpg`](https://github.com/chili-chip/chili-game-sdk/blob/main/examples/rpg/assets/pepper.rpg). The C++ in [`rpg.cpp`](https://github.com/chili-chip/chili-game-sdk/blob/main/examples/rpg/rpg.cpp) only adds the title menu, a pause menu and the end screen around `World`. It sets no rule hooks.
+The game file is [`assets/pepper.rpg`](https://github.com/chili-chip/chili-game-sdk/blob/main/examples/rpg/assets/pepper.rpg). [`assets/pepper-village.rpg`](https://github.com/chili-chip/chili-game-sdk/blob/main/examples/rpg/assets/pepper-village.rpg) is the same game with its [art inside the file](game-file.md#art), in Sweetie 16. The creator's RPG editor starts from it. The C++ in [`rpg.cpp`](https://github.com/chili-chip/chili-game-sdk/blob/main/examples/rpg/rpg.cpp) only adds the title menu, a pause menu and the end screen around `World`. It sets no rule hooks.
 
 ## Build and play
 

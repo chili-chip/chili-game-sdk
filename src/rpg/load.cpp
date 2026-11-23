@@ -389,6 +389,7 @@ struct Loader {
     if(root.get("format").string() != "chili-rpg") return fail("format", "must be \"chili-rpg\"");
     if(root.get("version").integer() != 1) return fail("version", "must be 1");
     if(!text(root, "title", "", g.title)) return false;
+    if(!text(root, "author", "", g.author)) return false;
     if(!text(root, "sprites", "", g.sprites)) return false;
 
     if(Ref bg = root.get("background")) {
@@ -812,9 +813,49 @@ struct Loader {
     return true;
   }
 
+  static constexpr int PIC = 8;  // picture size in pixels
+
+  // "art": up to 256 pictures, each 8 rows of 8 characters: '0' to 'f' a
+  // Sweetie 16 colour, '.' clear.
+  bool art(Ref root) {
+    Ref a = root.get("art");
+    if(!a) return true;
+    if(!a.is_object()) return fail("art", "not an object");
+    if(Ref pal = a.get("palette")) {
+      if(pal.string() != "sweetie16") return fail("art.palette", "only \"sweetie16\" for now");
+    }
+    Ref pics = a.get("pictures");
+    if(!pics.is_array()) return fail("art.pictures", "not a list");
+    if(pics.size() > MAX_PICTURES) return fail("art.pictures", "at most 256");
+    g.art.assign(ART_SIZE * ART_SIZE, ART_CLEAR);
+    g.art_count = pics.size();
+    for(int i = 0; i < pics.size(); i++) {
+      std::string p = "art.pictures[" + std::to_string(i) + "]";
+      Ref pic = pics.at(i);
+      if(!pic.is_array() || pic.size() != PIC) return fail(p, "needs 8 rows");
+      int x0 = (i % 16) * PIC, y0 = (i / 16) * PIC;
+      for(int y = 0; y < PIC; y++) {
+        std::string rp = p + "[" + std::to_string(y) + "]";
+        Ref row = pic.at(y);
+        std::string r = row.string();
+        if(!row.is_string() || r.size() != PIC) return fail(rp, "needs 8 characters");
+        for(int x = 0; x < PIC; x++) {
+          char c = r[x];
+          uint8_t v;
+          if(c == '.') v = ART_CLEAR;
+          else if(c >= '0' && c <= '9') v = c - '0';
+          else if(c >= 'a' && c <= 'f') v = c - 'a' + 10;
+          else return fail(rp, "'0' to 'f' or '.'");
+          g.art[(y0 + y) * ART_SIZE + x0 + x] = v;
+        }
+      }
+    }
+    return true;
+  }
+
   bool all(Ref root) {
     if(!root.is_object()) return fail("", "the file must be one JSON object");
-    return header(root) && collect_ids(root) && stats(root) && tiles(root) && songs(root) && rooms(root) &&
+    return header(root) && art(root) && collect_ids(root) && stats(root) && tiles(root) && songs(root) && rooms(root) &&
            start(root) && kinds(root) && items(root) && dialogue(root) && quests(root) && event(root, "lose", "", g.lose);
   }
 };

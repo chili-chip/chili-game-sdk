@@ -12,7 +12,27 @@
     "version": { "const": 1 },
     "title": { "type": "string", "minLength": 1, "maxLength": 32 },
     "author": { "type": "string", "maxLength": 32 },
-    "sprites": { "type": "string", "description": "The sprite sheet: 8x8 sprites, numbered left to right, top to bottom." },
+    "sprites": { "type": "string", "description": "The sprite sheet's file name, for C++ games: 8x8 sprites, numbered left to right, top to bottom. \"art\" wins when both are there." },
+    "art": {
+      "type": "object",
+      "description": "The game's own pictures. Picture n is sprite n.",
+      "required": ["pictures"],
+      "additionalProperties": false,
+      "properties": {
+        "palette": { "const": "sweetie16" },
+        "pictures": {
+          "type": "array",
+          "maxItems": 256,
+          "items": {
+            "type": "array",
+            "description": "8 rows of 8 characters: 0 to f is a Sweetie 16 colour, . is clear.",
+            "minItems": 8,
+            "maxItems": 8,
+            "items": { "type": "string", "pattern": "^[0-9a-f.]{8}$" }
+          }
+        }
+      }
+    },
     "background": { "type": "string", "pattern": "^#[0-9a-fA-F]{6}$" },
     "start": {
       "type": "object",

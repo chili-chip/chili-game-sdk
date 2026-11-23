@@ -7,6 +7,8 @@
 #include "fake_api.hpp"
 
 #include <cstdio>
+#include <fstream>
+#include <sstream>
 
 static uint32_t clock_ms = 0;
 static const char *out_dir = ".";
@@ -105,5 +107,14 @@ int main(int argc, char **argv) {
   world.end(true);
   run(1600);
   shot("rpg-end");
+
+  // The same game with its art inside the file, in Sweetie 16.
+  std::ifstream in(CHILI_TEMPLATE_RPG);
+  std::stringstream text;
+  text << in.rdbuf();
+  world.sheet = nullptr;
+  if(!world.load(text.str()).empty()) return 1;
+  world.render(clock_ms);
+  shot("rpg-art");
   return 0;
 }

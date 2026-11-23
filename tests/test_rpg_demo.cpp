@@ -8,12 +8,16 @@
 using namespace blit;
 using namespace chili::rpg;
 
-static std::string demo_file() {
-  std::ifstream in(CHILI_DEMO_RPG);
+static std::string read_file(const char *path) {
+  std::ifstream in(path);
   std::stringstream s;
   s << in.rdbuf();
   return s.str();
 }
+
+static std::string demo_file() { return read_file(CHILI_DEMO_RPG); }
+// The same game with its art inside, made by tools/art_from_sheet.py.
+static std::string template_file() { return read_file(CHILI_TEMPLATE_RPG); }
 
 static void read_all(World &w) {
   for(int i = 0; i < 12 && w.talking(); i++) play::press(w, Button::A, 2500);
@@ -35,9 +39,9 @@ TEST(the_demo_loads) {
   CHECK_EQ(w.game.kinds.size(), 8);
 }
 
-TEST(the_demo_story_plays_to_the_end) {
+static void play_story(const std::string &file) {
   World w;
-  CHECK(play::start(w, demo_file()));
+  CHECK(play::start(w, file));
   Index stone = Game::find(w.game.quests, "stone");
 
   bump(w, "elder", 1);  // "Will you bring it back?"
@@ -88,3 +92,21 @@ TEST(the_demo_story_plays_to_the_end) {
   CHECK_EQ(w.count(play::item(w, "ring")), 1);
   CHECK(w.result() == Result::won);
 }
+
+TEST(the_demo_story_plays_to_the_end) { play_story(demo_file()); }
+
+TEST(the_template_has_its_art_inside) {
+  World w;
+  CHECK(play::start(w, template_file()));
+  CHECK_EQ(w.game.art_count, 140);
+  CHECK(w.sheet != nullptr);
+  Game demo;
+  CHECK(load(demo_file(), demo).empty());
+  // Only the art and the background differ from the demo.
+  CHECK_EQ(w.game.rooms.size(), demo.rooms.size());
+  CHECK(w.game.rooms[0].ground == demo.rooms[0].ground);
+  CHECK_EQ(w.game.kinds.size(), demo.kinds.size());
+  CHECK_EQ(w.game.dialogue.size(), demo.dialogue.size());
+}
+
+TEST(the_template_story_plays_to_the_end) { play_story(template_file()); }

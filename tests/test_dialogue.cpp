@@ -102,3 +102,14 @@ TEST(renders_without_a_sheet) {
   int y = 127, x = 64;
   CHECK(px[(y * 128 + x) * 3] != 0 || px[(y * 128 + x) * 3 + 1] != 0 || px[(y * 128 + x) * 3 + 2] != 0);
 }
+
+TEST(tells_what_is_being_said) {
+  chili::TextBox box;
+  CHECK(box.speaker().empty());
+  box.say("Hello there.\nHow are you?", "Ana");
+  box.ask({"Fine", "Bad"});
+  CHECK(box.speaker() == "Ana");
+  CHECK(box.text() == "Hello there.\nHow are you?");
+  CHECK_EQ(box.choices().size(), 2);
+  CHECK(box.choices()[1] == "Bad");
+}
