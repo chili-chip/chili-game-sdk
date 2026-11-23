@@ -389,6 +389,7 @@ struct Loader {
     if(root.get("format").string() != "chili-rpg") return fail("format", "must be \"chili-rpg\"");
     if(root.get("version").integer() != 1) return fail("version", "must be 1");
     if(!text(root, "title", "", g.title)) return false;
+    if(!text(root, "author", "", g.author)) return false;
     if(!text(root, "sprites", "", g.sprites)) return false;
 
     if(Ref bg = root.get("background")) {

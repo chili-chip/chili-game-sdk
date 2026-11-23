@@ -21,6 +21,9 @@ void hold(uint32_t buttons);
 // The 128x128 RGB screen that set_screen_mode() gives.
 const uint8_t *screen_pixels();
 
+// The file the app was started with, as get_launch_path() gives it.
+void launch(const std::string &path);
+
 // Files written so far, by path.
 std::map<std::string, std::string> &files();
 

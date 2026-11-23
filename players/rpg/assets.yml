@@ -1,0 +1,6 @@
+# The game it plays when started without a file: Pepper Village, with its art
+# inside the file.
+assets.cpp:
+  ../../examples/rpg/assets/pepper-village.rpg:
+    name: asset_template_rpg
+    type: raw/binary

@@ -12,6 +12,7 @@ AudioChannel fake_channels[CHANNEL_COUNT];
 std::map<std::string, std::string> fake_files;
 uint32_t fake_now = 0;
 uint32_t fake_seed = 1;
+std::string fake_launch_path;
 
 struct Handle {
   std::string path;
@@ -54,6 +55,10 @@ bool file_exists(const std::string &path) {
   return fake_files.count(path) > 0;
 }
 
+const char *get_launch_path() {
+  return fake_launch_path.c_str();
+}
+
 const char *get_save_path() {
   return "saves/";
 }
@@ -93,6 +98,7 @@ APIConst make_api() {
   a.get_file_length = get_file_length;
   a.file_exists = file_exists;
   a.get_save_path = get_save_path;
+  a.get_launch_path = get_launch_path;
   return a;
 }
 
@@ -113,6 +119,7 @@ void reset() {
   for(auto &c : fake_channels) c = AudioChannel();
   fake_now = 0;
   fake_seed = 1;
+  fake_launch_path.clear();
   api_data.buttons.state = 0;
   api_data.buttons.pressed = 0;
   api_data.buttons.released = 0;
@@ -128,6 +135,10 @@ void hold(uint32_t held) {
 
 const uint8_t *screen_pixels() {
   return screen_buf;
+}
+
+void launch(const std::string &path) {
+  fake_launch_path = path;
 }
 
 std::map<std::string, std::string> &files() {

@@ -250,6 +250,7 @@ struct Song {
 
 struct Game {
   std::string title;
+  std::string author;
   std::string sprites;  // sprite sheet file name, for C++ games
   // The file's own art: ART_SIZE x ART_SIZE palette indexes (ART_CLEAR for
   // clear), or empty when the file has none.
