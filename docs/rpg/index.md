@@ -176,6 +176,7 @@ The chilichip console has a 128x128 screen and an RP2350 with 520 KB of RAM. The
 | Thing | Limit |
 | --- | --- |
 | Tile size | 8x8 px, so 16x16 tiles fill the screen |
+| Pictures in the file ([art](game-file.md#art)) | 256, 16 KB of RAM |
 | Tile types | 90 (one character each) |
 | Rooms | 32, each 16x16 to 64x64 tiles, two layers |
 | All rooms together | 24,576 tiles per layer |

@@ -10,6 +10,7 @@
 #include <cstdint>
 #include <functional>
 #include <map>
+#include <memory>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -141,7 +142,8 @@ public:
   std::vector<Actor> actors;  // in the current room
   Hooks hooks;
   // The sprite sheet: 8x8 sprites, numbered left to right, top to bottom.
-  // Without one, the world draws coloured squares.
+  // Without one, the world draws coloured squares. When the game file has its
+  // own art, load() points this at a sheet made from it.
   blit::Surface *sheet = nullptr;
   bool show_hud = true;
   int save_slot = 0;
@@ -254,6 +256,8 @@ private:
   void pad(uint32_t held, int &dx, int &dy) const;
   void slide(Actor &a, int dx, int dy, int px);
   void play_room_music();
+
+  std::unique_ptr<blit::Surface> art_sheet;  // made from the file's art
 
   TextBox box;
   Index talk = NONE;  // dialogue being shown

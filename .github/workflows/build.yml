@@ -115,4 +115,4 @@ jobs:
         if: matrix.test
         run: |
           pip3 install "jsonschema>=4.18"
-          python3 main/format/validate.py main/examples/rpg/assets/pepper.rpg
+          python3 main/format/validate.py main/examples/rpg/assets/pepper.rpg main/examples/rpg/assets/pepper-village.rpg

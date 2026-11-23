@@ -36,6 +36,17 @@ constexpr int MAX_CHOICES = 4;
 constexpr int MAX_TEXT = 32 * 1024; // dialogue and item text together
 constexpr int MAX_ACTIONS = 1024;   // conditions and actions, each
 
+// Art inside the game file: up to 256 pictures of 8x8 in Sweetie 16, laid out
+// as one 128x128 sheet, 16 pictures to a row.
+constexpr int ART_SIZE = 128;
+constexpr int MAX_PICTURES = 256;
+constexpr uint8_t ART_CLEAR = 16;   // a clear pixel; 0 to 15 are Sweetie 16
+// Sweetie 16 by GrafxKid, as 0xRRGGBB. The same palette as Chili Beat.
+constexpr uint32_t SWEETIE16[16] = {
+    0x1a1c2c, 0x5d275d, 0xb13e53, 0xef7d57, 0xffcd75, 0xa7f070, 0x38b764, 0x257179,
+    0x29366f, 0x3b5dc9, 0x41a6f6, 0x73eff7, 0xf4f4f4, 0x94b0c2, 0x566c86, 0x333c57,
+};
+
 using Index = int16_t;
 constexpr Index NONE = -1;
 
@@ -239,7 +250,11 @@ struct Song {
 
 struct Game {
   std::string title;
-  std::string sprites;  // sprite sheet file name, for the player app
+  std::string sprites;  // sprite sheet file name, for C++ games
+  // The file's own art: ART_SIZE x ART_SIZE palette indexes (ART_CLEAR for
+  // clear), or empty when the file has none.
+  std::vector<uint8_t> art;
+  int art_count = 0;    // pictures in the file
   uint32_t hash = 0;    // of the file text; saves only load into the same file
   uint8_t background[3] = {0, 0, 0};
 

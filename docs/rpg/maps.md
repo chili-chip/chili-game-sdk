@@ -113,4 +113,4 @@ The hook replaces the drawing of every ground and top tile. `at` is on the scree
 
 ## Without a sprite sheet
 
-With no `world.sheet`, the world draws a coloured square for each sprite. That is handy for a first test of a map.
+With no `world.sheet` and no [`art`](game-file.md#art) in the file, the world draws a coloured square for each sprite. That is handy for a first test of a map.
