@@ -20,6 +20,7 @@ constexpr uint32_t MOUTH_MS = 110;
 void TextBox::say(std::string_view text, std::string_view who, int face_sprite, const Surface *faces) {
   open_ = true;
   name = who;
+  said = text;
   face = faces ? face_sprite : -1;
   sheet = faces;
   options.clear();

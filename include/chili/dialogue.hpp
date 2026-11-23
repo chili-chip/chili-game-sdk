@@ -51,6 +51,10 @@ public:
   bool typing() const { return revealed < page_chars(); }
   int page() const { return page_; }
   int pages() const;
+  // What is open now: the name, the text as given to say(), and the choices.
+  const std::string &speaker() const { return name; }
+  const std::string &text() const { return said; }
+  const std::vector<std::string> &choices() const { return options; }
 
   uint32_t char_ms = 28;          // time per letter
   uint32_t input_delay_ms = 250;  // A is ignored this long, so mashing does not skip text
@@ -71,6 +75,7 @@ private:
 
   bool open_ = false;
   std::string name;
+  std::string said;
   int face = -1;
   const blit::Surface *sheet = nullptr;
   std::vector<std::string> lines;  // wrapped

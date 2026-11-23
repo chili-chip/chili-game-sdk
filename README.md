@@ -21,6 +21,8 @@ A small C++ library for chilichip console games: menus, scenes, saves, high scor
 
 **RPG parts** (`chili-game-sdk-rpg` target, `chili/rpg/world.hpp`): a turn-based RPG on a grid played from one JSON game file (`.rpg`): tile maps, movement, stats and levels, bump combat, enemy AI, inventory and equipment, dialogue, quests and saves. See [RPG parts](https://game-sdk.chilichip.eu/rpg/) and the demo RPG, Pepper Village (art: [Micro Roguelike by Kenney](https://kenney.nl/assets/micro-roguelike), CC0).
 
+**Player apps** (`players/rpg`): `chili-rpg.blit` plays `.rpg` files on the console (a handler app), and a web player plays them in the browser. The chili creator's RPG editor uses both. See [Player apps](https://game-sdk.chilichip.eu/rpg/players/).
+
 ## Add it to a game
 
 In your game's `CMakeLists.txt`, after `find_package(32BLIT ...)`:
@@ -53,6 +55,7 @@ cmake --build build
 ctest --test-dir build --output-on-failure
 ./build/examples/demo/chili-demo      # Chili Catch, the demo game
 ./build/examples/rpg/chili-rpg-demo   # Pepper Village, the demo RPG
+./build/players/rpg/chili-rpg         # the RPG player app (Pepper Village with no file)
 python format/validate.py examples/rpg/assets/pepper.rpg  # check a game file (pip install jsonschema)
 ```
 
